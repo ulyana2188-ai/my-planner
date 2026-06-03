@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Мой планер</title>
+  <style>
+    :root {
+      --blue:   #00BEF2;
+      --pink:   #CD0068;
+      --yellow: #FFCC00;
+      --green:  #4DB400;
+      --dark:   #1a1a2e;
+      --light:  #f5f7fa;
+      --card:   #ffffff;
+      --text:   #2d2d2d;
+      --muted:  #888;
+      --border: #e8e8e8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--light); color: var(--text); min-height: 100vh; }
+
+    header {
+      background: var(--dark); padding: 0 24px;
+      display: flex; align-items: center; gap: 14px;
+      height: 64px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    }
+    .header-title { color: #fff; font-size: 20px; font-weight: 700; flex: 1; }
+    .header-accent { color: var(--blue); }
+
+    .filters {
+      display: flex; gap: 8px; padding: 16px 20px 0;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .filters::-webkit-scrollbar { display: none; }
+    .filter-btn {
+      padding: 8px 18px; border-radius: 20px; border: 2px solid var(--border);
+      background: var(--card); color: var(--text); cursor: pointer;
+      font-size: 14px; font-weight: 500; white-space: nowrap; transition: .2s;
+    }
+    .filter-btn.active { background: var(--dark); color: #fff; border-color: var(--dark); }
+    .filter-btn.remember.active { background: var(--yellow); color: var(--dark); border-color: var(--yellow); }
+
+    .month-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; padding: 12px 20px 0;
+    }
+    .month-nav button { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--dark); }
+    .month-nav span { font-weight: 700; font-size: 16px; min-width: 160px; text-align: center; }
+
+    .main { padding: 16px 20px 100px; max-width: 700px; margin: 0 auto; }
+
+    /* ── Обычные задачи ── */
+    .day-group { margin-bottom: 20px; }
+    .day-label {
+      font-weight: 700; font-size: 15px; color: var(--dark);
+      margin-bottom: 8px; padding-bottom: 4px;
+      border-bottom: 2px solid var(--blue);
+    }
+    .task-card {
+      background: var(--card); border-radius: 12px;
+      padding: 12px 14px; margin-bottom: 8px;
+      display: flex; align-items: flex-start; gap: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07); transition: opacity .2s;
+    }
+    .task-card.done { opacity: .5; }
+    .task-card.done .task-name { text-decoration: line-through; }
+    .task-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--blue); cursor: pointer;
+      flex-shrink: 0; margin-top: 2px; background: none;
+      display: flex; align-items: center; justify-content: center; transition: .2s;
+    }
+    .task-card.done .task-check { background: var(--green); border-color: var(--green); }
+    .task-check::after { content: '✓'; color: #fff; font-size: 13px; display: none; }
+    .task-card.done .task-check::after { display: block; }
+    .task-body { flex: 1; min-width: 0; }
+    .task-name { font-weight: 600; font-size: 15px; word-break: break-word; }
+    .task-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+    .task-meta span { font-size: 13px; color: var(--muted); }
+    .task-delete {
+      background: none; border: none; cursor: pointer; color: var(--muted);
+      font-size: 18px; padding: 0 4px; flex-shrink: 0; transition: color .2s;
+    }
+    .task-delete:hover { color: var(--pink); }
+
+    /* ── Не забыть ── */
+    .remember-section { margin-bottom: 16px; }
+    .remember-header {
+      font-weight: 700; font-size: 15px; color: var(--dark);
+      margin-bottom: 12px; padding-bottom: 4px;
+      border-bottom: 2px solid var(--yellow);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .remember-badge {
+      background: var(--yellow); color: var(--dark);
+      border-radius: 12px; padding: 2px 9px; font-size: 13px;
+    }
+    .remember-card {
+      background: var(--card); border-radius: 12px;
+      padding: 12px 14px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+      border-left: 3px solid var(--yellow);
+    }
+    .remember-card.done { opacity: .45; }
+    .remember-card.done .task-name { text-decoration: line-through; }
+    .remember-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--yellow); cursor: pointer;
+      flex-shrink: 0; background: none;
+      display: flex; align-items: center; justify-content: center; transition: .2s;
+    }
+    .remember-card.done .remember-check { background: var(--green); border-color: var(--green); }
+    .remember-check::after { content: '✓'; color: #fff; font-size: 13px; display: none; }
+    .remember-card.done .remember-check::after { display: block; }
+
+    .empty { text-align: center; color: var(--muted); padding: 60px 20px; font-size: 16px; }
+
+    /* FAB */
+    .fab {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--pink); color: #fff; border: none;
+      font-size: 28px; cursor: pointer; z-index: 200;
+      box-shadow: 0 4px 16px rgba(205,0,104,.4);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .15s;
+    }
+    .fab:active { transform: scale(.92); }
+    .fab.remember-mode { background: var(--yellow); color: var(--dark); box-shadow: 0 4px 16px rgba(255,204,0,.5); }
+
+    /* Modal */
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 300;
+      align-items: flex-end; justify-content: center;
+    }
+    .overlay.open { display: flex; }
+    .modal {
+      background: var(--card); border-radius: 20px 20px 0 0;
+      padding: 24px 20px 36px; width: 100%; max-width: 500px;
+    }
+    .modal h2 { font-size: 18px; margin-bottom: 16px; }
+    .modal label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; margin-top: 12px; }
+    .modal input {
+      width: 100%; padding: 10px 14px; border-radius: 10px;
+      border: 1.5px solid var(--border); font-size: 15px;
+      outline: none; transition: border-color .2s;
+    }
+    .modal input:focus { border-color: var(--blue); }
+    .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-save {
+      flex: 1; padding: 13px; border-radius: 12px; border: none;
+      background: var(--pink); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;
+    }
+    .btn-save.yellow { background: var(--yellow); color: var(--dark); }
+    .btn-cancel {
+      padding: 13px 20px; border-radius: 12px; border: 1.5px solid var(--border);
+      background: none; font-size: 16px; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">Мой <span class="header-accent">планер</span></div>
+</header>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="setFilter('today', this)">Сегодня</button>
+  <button class="filter-btn" onclick="setFilter('week', this)">Эта неделя</button>
+  <button class="filter-btn" onclick="setFilter('month', this)">Этот месяц</button>
+  <button class="filter-btn remember" onclick="setFilter('remember', this)">⭐ Не забыть</button>
+</div>
+
+<div class="month-nav" id="monthNav" style="display:none">
+  <button onclick="changeMonth(-1)">‹</button>
+  <span id="monthLabel"></span>
+  <button onclick="changeMonth(1)">›</button>
+</div>
+
+<div class="main" id="main"></div>
+
+<button class="fab" id="fab" onclick="openModal()">+</button>
+
+<!-- Modal обычная задача -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <h2 id="modalTitle">Новая задача</h2>
+    <div id="dateFields">
+      <label>Дата</label>
+      <input type="date" id="inpDay" />
+      <label>Время</label>
+      <input type="time" id="inpTime" />
+      <label>Место</label>
+      <input type="text" id="inpPlace" placeholder="Где?" />
+    </div>
+    <label>Задача *</label>
+    <input type="text" id="inpTask" placeholder="Что сделать?" />
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+      <button class="btn-save" id="btnSave" onclick="saveTask()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api/tasks';
+let allTasks = [];
+let filter = 'today';
+let viewMonth = new Date();
+let addingRemember = false;
+
+const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const DAYS_FULL = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+
+function setFilter(f, btn) {
+  filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('monthNav').style.display = f === 'month' ? 'flex' : 'none';
+  const fab = document.getElementById('fab');
+  fab.classList.toggle('remember-mode', f === 'remember');
+  render();
+}
+
+function changeMonth(d) {
+  viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + d, 1);
+  document.getElementById('monthLabel').textContent =
+    MONTHS[viewMonth.getMonth()] + ' ' + viewMonth.getFullYear();
+  render();
+}
+
+function toYMD(d) { return d.toISOString().slice(0,10); }
+
+function getRange() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  if (filter === 'today') return [toYMD(today), toYMD(today)];
+  if (filter === 'week') {
+    const mon = new Date(today);
+    mon.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1));
+    const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+    return [toYMD(mon), toYMD(sun)];
+  }
+  const y = viewMonth.getFullYear(), m = viewMonth.getMonth();
+  return [toYMD(new Date(y, m, 1)), toYMD(new Date(y, m+1, 0))];
+}
+
+function render() {
+  const main = document.getElementById('main');
+
+  if (filter === 'remember') {
+    const items = allTasks.filter(t => t.place === '__remember__');
+    if (!items.length) { main.innerHTML = '<div class="empty">Список пуст — нажми + чтобы добавить</div>'; return; }
+    const active = items.filter(t => !t.done);
+    const done   = items.filter(t => t.done);
+    const renderCards = arr => arr.map(t => `
+      <div class="remember-card ${t.done ? 'done' : ''}">
+        <div class="remember-check" onclick="toggleDone(${t.id}, ${t.done})"></div>
+        <div class="task-body">
+          <div class="task-name">${t.task}</div>
+        </div>
+        <button class="task-delete" onclick="deleteTask(${t.id})">✕</button>
+      </div>`).join('');
+    main.innerHTML = `
+      <div class="remember-section">
+        <div class="remember-header">⭐ Не забыть <span class="remember-badge">${active.length}</span></div>
+        ${renderCards(active)}
+        ${done.length ? `<div style="color:var(--muted);font-size:13px;margin:12px 0 8px">Выполнено</div>${renderCards(done)}` : ''}
+      </div>`;
+    return;
+  }
+
+  if (filter === 'month') {
+    document.getElementById('monthLabel').textContent =
+      MONTHS[viewMonth.getMonth()] + ' ' + viewMonth.getFullYear();
+  }
+
+  const [from, to] = getRange();
+  const filtered = allTasks.filter(t => t.place !== '__remember__' && t.day >= from && t.day <= to);
+  const groups = {};
+  filtered.forEach(t => (groups[t.day] = groups[t.day] || []).push(t));
+  const days = Object.keys(groups).sort();
+
+  if (!days.length) { main.innerHTML = '<div class="empty">Задач нет</div>'; return; }
+
+  main.innerHTML = days.map(day => {
+    const d = new Date(day + 'T00:00:00');
+    const label = `${d.getDate()} ${MONTHS[d.getMonth()].toLowerCase()}, ${DAYS_FULL[d.getDay()]}`;
+    const cards = groups[day].map(t => `
+      <div class="task-card ${t.done ? 'done' : ''}">
+        <div class="task-check" onclick="toggleDone(${t.id}, ${t.done})"></div>
+        <div class="task-body">
+          <div class="task-name">${t.task}</div>
+          <div class="task-meta">
+            ${t.time ? `<span>⏰ ${t.time}</span>` : ''}
+            ${t.place ? `<span>📍 ${t.place}</span>` : ''}
+          </div>
+        </div>
+        <button class="task-delete" onclick="deleteTask(${t.id})">✕</button>
+      </div>`).join('');
+    return `<div class="day-group"><div class="day-label">${label}</div>${cards}</div>`;
+  }).join('');
+}
+
+async function loadTasks() {
+  const r = await fetch(API);
+  allTasks = await r.json();
+  render();
+}
+
+async function toggleDone(id, wasDone) {
+  await fetch(`${API}/${id}`, { method:'PATCH',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({done: wasDone ? 0 : 1})
+  });
+  const t = allTasks.find(x => x.id === id);
+  if (t) t.done = wasDone ? 0 : 1;
+  render();
+}
+
+async function deleteTask(id) {
+  await fetch(`${API}/${id}`, {method:'DELETE'});
+  allTasks = allTasks.filter(x => x.id !== id);
+  render();
+}
+
+function openModal() {
+  addingRemember = filter === 'remember';
+  document.getElementById('modalTitle').textContent = addingRemember ? '⭐ Не забыть' : 'Новая задача';
+  document.getElementById('dateFields').style.display = addingRemember ? 'none' : 'block';
+  document.getElementById('btnSave').className = 'btn-save' + (addingRemember ? ' yellow' : '');
+  if (!addingRemember) {
+    document.getElementById('inpDay').value = toYMD(new Date());
+    document.getElementById('inpTime').value = '';
+    document.getElementById('inpPlace').value = '';
+  }
+  document.getElementById('inpTask').value = '';
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(() => document.getElementById('inpTask').focus(), 100);
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('overlay'))
+    document.getElementById('overlay').classList.remove('open');
+}
+
+async function saveTask() {
+  const task = document.getElementById('inpTask').value.trim();
+  if (!task) { alert('Напиши задачу'); return; }
+
+  let body;
+  if (addingRemember) {
+    body = { day: toYMD(new Date()), task, time: '', place: '__remember__' };
+  } else {
+    const day = document.getElementById('inpDay').value;
+    if (!day) { alert('Выбери дату'); return; }
+    body = { day, task, time: document.getElementById('inpTime').value,
+             place: document.getElementById('inpPlace').value.trim() };
+  }
+
+  const r = await fetch(API, { method:'POST',
+    headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
+  });
+  const data = await r.json();
+  allTasks.push({id: data.id, done: 0, ...body});
+  document.getElementById('overlay').classList.remove('open');
+  render();
+}
+
+loadTasks();
+</script>
+</body>
+</html>
