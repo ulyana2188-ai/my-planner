@@ -131,7 +131,7 @@
     .remember-check::after{content:'✓';color:#fff;font-size:13px;display:none;}
     .remember-card.done .remember-check::after{display:block;}
 
-    .empty{text-align:center;color:var(--muted);padding:60px 20px;font-size:16px;}
+    .empty-msg{text-align:center;color:var(--muted);padding:60px 20px;font-size:16px;}
 
     /* ── FAB ── */
     .fab{position:fixed;bottom:24px;right:20px;width:54px;height:54px;border-radius:50%;background:var(--pink);color:#fff;border:none;font-size:28px;cursor:pointer;z-index:200;box-shadow:0 4px 16px rgba(205,0,104,.4);display:flex;align-items:center;justify-content:center;transition:transform .15s;}
@@ -365,7 +365,7 @@ function render(){
 
   if(filter==='remember'){
     const items=allTasks.filter(t=>t.place==='__remember__');
-    if(!items.length){main.innerHTML='<div class="empty">Список пуст — нажми + чтобы добавить</div>';return;}
+    if(!items.length){main.innerHTML='<div class="empty-msg">Список пуст — нажми + чтобы добавить</div>';return;}
     const active=items.filter(t=>!t.done);
     const done=items.filter(t=>t.done);
     const rc=arr=>arr.map(t=>`
@@ -408,7 +408,7 @@ function render(){
     const [from,to]=getRange();
     const taskDays=new Set(allTasks.filter(t=>t.place!=='__remember__'&&t.day>=from&&t.day<=to).map(t=>t.day));
     daysToShow=[...taskDays].sort();
-    if(!daysToShow.length){main.innerHTML='<div class="empty">Задач нет</div>';return;}
+    if(!daysToShow.length){main.innerHTML='<div class="empty-msg">Задач нет</div>';return;}
   }
 
   // Group tasks by day
@@ -618,5 +618,7 @@ loadTasks();
 </script>
 </body>
 </html>
+
+
 
 
