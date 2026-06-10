@@ -21,12 +21,24 @@
     .hdr-name{margin-left:auto;color:#fff;font-size:16px;font-weight:700;white-space:nowrap;}
     .hdr-name span{color:var(--blue);}
 
+    /* ── Tab bar ── */
+    .tabs{display:flex;background:var(--dark);padding:0 16px;border-bottom:2px solid rgba(255,255,255,.08);}
+    .tab-btn{padding:10px 18px;color:rgba(255,255,255,.5);font-size:14px;font-weight:600;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap;}
+    .tab-btn.active{color:#fff;border-bottom-color:var(--blue);}
+
     /* ── Filters ── */
     .filters{display:flex;gap:8px;padding:14px 16px 0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
     .filters::-webkit-scrollbar{display:none;}
     .filter-btn{padding:8px 16px;border-radius:20px;border:2px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;transition:.2s;}
     .filter-btn.active{background:var(--dark);color:#fff;border-color:var(--dark);}
     .filter-btn.remember.active{background:var(--yellow);color:var(--dark);border-color:var(--yellow);}
+
+    /* ── Slot mode toggle ── */
+    .slot-mode-bar{display:flex;align-items:center;gap:8px;padding:10px 16px 0;max-width:700px;margin:0 auto;}
+    .slot-mode-bar span{font-size:13px;color:var(--muted);white-space:nowrap;}
+    .slot-toggle{display:flex;border-radius:20px;overflow:hidden;border:2px solid var(--border);background:var(--card);}
+    .slot-toggle button{padding:6px 14px;font-size:13px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--muted);transition:.2s;}
+    .slot-toggle button.active{background:var(--dark);color:#fff;}
 
     .month-nav{display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 16px 0;}
     .month-nav button{background:none;border:none;font-size:22px;cursor:pointer;color:var(--dark);}
@@ -38,8 +50,10 @@
     .day-group{margin-bottom:22px;}
     .day-label{font-weight:700;font-size:15px;color:var(--dark);margin-bottom:8px;padding-bottom:4px;border-bottom:3px solid var(--dc,var(--blue));}
 
-    /* ── Slot row ── */
+    /* ── HORIZONTAL slot rows ── */
     .slots-list{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;}
+
+    /* ── Slot row ── */
     .slot-wrap{}
     .slot-row{display:grid;grid-template-columns:56px 1fr;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
     .slot-wrap.empty .slot-row{box-shadow:none;border:1.5px dashed var(--dc,var(--blue));cursor:pointer;opacity:.75;transition:opacity .15s;}
@@ -50,7 +64,6 @@
     .slot-time .te{font-size:10px;color:rgba(255,255,255,.6);}
     .slot-wrap.empty .slot-time .ts{color:var(--dc,var(--blue));}
     .slot-wrap.empty .slot-time .te{color:var(--dc,var(--blue));opacity:.7;}
-    /* yellow override */
     .slot-wrap.yw .slot-time .ts{color:var(--dark);}
     .slot-wrap.yw .slot-time .te{color:var(--dark);opacity:.6;}
     .slot-wrap.yw.empty .slot-time .ts{color:var(--dark);}
@@ -69,10 +82,12 @@
     .slot-tname{font-weight:600;font-size:14px;flex:1;min-width:0;word-break:break-word;}
     .slot-wrap.done .slot-tname{text-decoration:line-through;color:var(--muted);}
     .slot-meta{font-size:12px;color:var(--muted);font-weight:400;}
+    .slot-deadline-badge{font-size:11px;background:var(--pink);color:#fff;border-radius:8px;padding:1px 6px;font-weight:600;white-space:nowrap;}
     .slot-actions{display:flex;gap:2px;flex-shrink:0;}
     .slot-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 4px;border-radius:5px;}
     .slot-btn:hover{color:var(--dark);}
     .slot-btn.del:hover{color:var(--pink);}
+    .slot-btn.edit-btn:hover{color:var(--blue);}
 
     /* slot expand */
     .slot-extra{display:none;padding:8px 10px 10px 10px;border:1.5px solid var(--border);border-top:none;border-radius:0 0 10px 10px;background:var(--card);}
@@ -80,8 +95,11 @@
     .slot-extra textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:14px;font-family:inherit;resize:vertical;min-height:56px;outline:none;transition:border-color .2s;}
     .slot-extra textarea:focus{border-color:var(--blue);}
 
-    /* ── Regular task card (no-time tasks) ── */
-    .task-card{background:var(--card);border-radius:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:grab;}
+    /* ── HORIZONTAL task cards ── */
+    .free-tasks-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+
+    .task-card{background:var(--card);border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:grab;
+      display:flex;flex-direction:column;min-width:180px;max-width:260px;flex:1 1 180px;}
     .task-card.dragging{opacity:.4;cursor:grabbing;}
     .task-card.drag-over{border:2px dashed var(--blue);}
     .task-card.done{opacity:.5;}
@@ -93,18 +111,19 @@
     .task-check::after{content:'✓';color:#fff;font-size:13px;display:none;}
     .task-card.done .task-check::after{display:block;}
     .task-body{flex:1;min-width:0;}
-    .task-name{font-weight:600;font-size:15px;word-break:break-word;}
-    .task-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
-    .task-meta span{font-size:13px;color:var(--muted);}
-    .task-deadline{font-size:12px;color:var(--pink);font-weight:600;margin-top:3px;}
-    .task-actions{display:flex;align-items:center;gap:3px;flex-shrink:0;}
-    .task-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:3px 5px;border-radius:6px;transition:color .2s;}
+    .task-name{font-weight:600;font-size:14px;word-break:break-word;}
+    .task-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
+    .task-meta span{font-size:12px;color:var(--muted);}
+    .task-deadline{font-size:11px;color:#fff;background:var(--pink);border-radius:8px;padding:1px 7px;font-weight:700;margin-top:4px;display:inline-block;}
+    .task-actions{display:flex;align-items:center;gap:2px;flex-shrink:0;}
+    .task-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 4px;border-radius:6px;transition:color .2s;}
     .task-btn:hover{color:var(--dark);}
     .task-btn.del:hover{color:var(--pink);}
+    .task-btn.edit-btn:hover{color:var(--blue);}
     .task-btn.expand.open{color:var(--blue);}
-    .task-extra{display:none;padding:0 10px 10px 40px;border-top:1px dashed var(--border);}
+    .task-extra{display:none;padding:0 10px 10px 10px;border-top:1px dashed var(--border);}
     .task-extra.open{display:block;}
-    .task-extra textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:14px;font-family:inherit;resize:vertical;min-height:56px;outline:none;transition:border-color .2s;}
+    .task-extra textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical;min-height:48px;outline:none;transition:border-color .2s;}
     .task-extra textarea:focus{border-color:var(--blue);}
 
     /* files */
@@ -123,7 +142,9 @@
     /* ── Remember ── */
     .remember-header{font-weight:700;font-size:15px;color:var(--dark);margin-bottom:12px;padding-bottom:4px;border-bottom:2px solid var(--yellow);display:flex;align-items:center;gap:8px;}
     .remember-badge{background:var(--yellow);color:var(--dark);border-radius:12px;padding:2px 9px;font-size:13px;font-weight:700;}
-    .remember-card{background:var(--card);border-radius:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:3px solid var(--yellow);}
+    .remember-cards-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+    .remember-card{background:var(--card);border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:3px solid var(--yellow);
+      min-width:160px;max-width:240px;flex:1 1 160px;}
     .remember-card.done{opacity:.45;}
     .remember-card.done .task-name{text-decoration:line-through;}
     .remember-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--yellow);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s;}
@@ -137,6 +158,7 @@
     .fab{position:fixed;bottom:24px;right:20px;width:54px;height:54px;border-radius:50%;background:var(--pink);color:#fff;border:none;font-size:28px;cursor:pointer;z-index:200;box-shadow:0 4px 16px rgba(205,0,104,.4);display:flex;align-items:center;justify-content:center;transition:transform .15s;}
     .fab:active{transform:scale(.92);}
     .fab.remember-mode{background:var(--yellow);color:var(--dark);}
+    .fab.kanban-mode{background:var(--green);}
 
     /* ── Modal ── */
     .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:flex-end;justify-content:center;}
@@ -144,25 +166,71 @@
     .modal{background:var(--card);border-radius:20px 20px 0 0;padding:24px 18px 36px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;}
     .modal h2{font-size:18px;margin-bottom:16px;}
     .modal label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;margin-top:12px;}
-    .modal input,.modal textarea{width:100%;padding:10px 13px;border-radius:10px;border:1.5px solid var(--border);font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;}
-    .modal input:focus,.modal textarea:focus{border-color:var(--blue);}
+    .modal input,.modal textarea,.modal select{width:100%;padding:10px 13px;border-radius:10px;border:1.5px solid var(--border);font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;background:#fff;}
+    .modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--blue);}
     .modal-btns{display:flex;gap:10px;margin-top:20px;}
     .btn-save{flex:1;padding:13px;border-radius:12px;border:none;background:var(--pink);color:#fff;font-size:16px;font-weight:600;cursor:pointer;}
     .btn-save.yellow{background:var(--yellow);color:var(--dark);}
+    .btn-save.green{background:var(--green);}
     .btn-cancel{padding:13px 18px;border-radius:12px;border:1.5px solid var(--border);background:none;font-size:16px;cursor:pointer;}
 
-    /* ── Cat ── */
+    /* ── KANBAN ── */
+    #kanbanView{padding:14px 16px 110px;}
+    .kanban-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+    .kanban-toolbar h2{font-size:18px;font-weight:700;flex:1;}
+    .btn-new-board{padding:8px 18px;border-radius:20px;background:var(--green);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;}
+    .kanban-boards-selector{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+    .board-tab{padding:7px 16px;border-radius:20px;border:2px solid var(--border);background:var(--card);font-size:14px;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px;}
+    .board-tab.active{background:var(--dark);color:#fff;border-color:var(--dark);}
+    .board-tab .del-board{color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;margin-left:2px;}
+    .board-tab .del-board:hover{color:var(--pink);}
+    .board-tab:not(.active) .del-board{color:var(--muted);}
 
-    /* ── Mobile ── */
+    .kanban-board{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;align-items:flex-start;}
+    .kanban-board::-webkit-scrollbar{height:6px;}
+    .kanban-board::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+    .kanban-col{background:var(--card);border-radius:14px;padding:12px;min-width:220px;max-width:260px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+    .kanban-col-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+    .kanban-col-title{font-weight:700;font-size:14px;flex:1;}
+    .kanban-col-count{background:var(--border);border-radius:10px;padding:1px 8px;font-size:12px;color:var(--muted);}
+    .kanban-col-actions{display:flex;gap:2px;}
+    .kcol-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 4px;border-radius:5px;}
+    .kcol-btn:hover{color:var(--pink);}
+
+    .kanban-cards{display:flex;flex-direction:column;gap:7px;min-height:40px;}
+    .kanban-card{background:var(--light);border-radius:10px;padding:10px 12px;cursor:grab;border-left:3px solid var(--blue);font-size:14px;position:relative;}
+    .kanban-card:hover .kcard-actions{opacity:1;}
+    .kanban-card.dragging{opacity:.4;}
+    .kanban-card-title{font-weight:600;word-break:break-word;margin-bottom:4px;}
+    .kanban-card-desc{font-size:12px;color:var(--muted);word-break:break-word;}
+    .kanban-card-deadline{font-size:11px;color:#fff;background:var(--pink);border-radius:7px;padding:1px 7px;font-weight:700;display:inline-block;margin-top:5px;}
+    .kcard-actions{position:absolute;top:6px;right:6px;display:flex;gap:2px;opacity:0;transition:.15s;background:var(--card);border-radius:6px;padding:2px;}
+    .kcard-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:2px 4px;border-radius:4px;}
+    .kcard-btn:hover{color:var(--dark);}
+    .kcard-btn.del:hover{color:var(--pink);}
+
+    .kanban-add-card{margin-top:8px;width:100%;padding:7px;border-radius:8px;border:1.5px dashed var(--border);background:none;cursor:pointer;font-size:13px;color:var(--muted);transition:.2s;}
+    .kanban-add-card:hover{border-color:var(--blue);color:var(--blue);}
+
+    .kanban-add-col{background:rgba(0,0,0,.04);border-radius:14px;padding:12px;min-width:200px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;min-height:80px;border:2px dashed var(--border);cursor:pointer;transition:.2s;}
+    .kanban-add-col:hover{border-color:var(--blue);color:var(--blue);}
+    .kanban-add-col span{font-size:13px;color:var(--muted);}
+
+    /* inline edit overlay */
+    .inline-edit-wrap{position:relative;}
+    .inline-edit-wrap input{font-weight:600;font-size:14px;border:1.5px solid var(--blue);border-radius:6px;padding:2px 6px;width:100%;outline:none;}
+
     @media(max-width:480px){
       header{padding:0 12px;height:56px;}
       .school-name{font-size:13px;}
       .hdr-name{font-size:13px;}
       .main{padding:10px 10px 110px;}
       .slot-row{grid-template-columns:52px 1fr;}
-      .slot-time .ts{font-size:11px;}
       .filters{padding:10px 10px 0;}
       .filter-btn{padding:7px 13px;font-size:13px;}
+      .task-card{min-width:140px;}
+      .kanban-col{min-width:200px;}
     }
   </style>
 </head>
@@ -185,23 +253,51 @@
   <div class="hdr-name">Киняева <span>Ульяна</span></div>
 </header>
 
-<div class="filters">
-  <button class="filter-btn active" onclick="setFilter('today',this)">Сегодня</button>
-  <button class="filter-btn" onclick="setFilter('week',this)">Эта неделя</button>
-  <button class="filter-btn" onclick="setFilter('month',this)">Этот месяц</button>
-  <button class="filter-btn remember" onclick="setFilter('remember',this)">⭐ Не забыть</button>
+<!-- Top Tab Bar -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('planner',this)">📅 Планер</button>
+  <button class="tab-btn" onclick="switchTab('kanban',this)">📋 Канбан</button>
 </div>
 
-<div class="month-nav" id="monthNav" style="display:none">
-  <button onclick="changeMonth(-1)">‹</button>
-  <span id="monthLabel"></span>
-  <button onclick="changeMonth(1)">›</button>
+<!-- PLANNER VIEW -->
+<div id="plannerView">
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('today',this)">Сегодня</button>
+    <button class="filter-btn" onclick="setFilter('week',this)">Эта неделя</button>
+    <button class="filter-btn" onclick="setFilter('month',this)">Этот месяц</button>
+    <button class="filter-btn remember" onclick="setFilter('remember',this)">⭐ Не забыть</button>
+  </div>
+
+  <div class="slot-mode-bar" id="slotModeBar">
+    <span>Слоты:</span>
+    <div class="slot-toggle">
+      <button id="btnSchool" class="active" onclick="setSlotMode('school',this)">Школьные</button>
+      <button id="btnHourly" onclick="setSlotMode('hourly',this)">Каждый час</button>
+    </div>
+  </div>
+
+  <div class="month-nav" id="monthNav" style="display:none">
+    <button onclick="changeMonth(-1)">‹</button>
+    <span id="monthLabel"></span>
+    <button onclick="changeMonth(1)">›</button>
+  </div>
+
+  <div class="main" id="main"></div>
 </div>
 
-<div class="main" id="main"></div>
-<button class="fab" id="fab" onclick="openModal()">+</button>
+<!-- KANBAN VIEW -->
+<div id="kanbanView" style="display:none">
+  <div class="kanban-toolbar">
+    <h2>📋 Канбан-доски</h2>
+    <button class="btn-new-board" onclick="openNewBoardModal()">+ Новая доска</button>
+  </div>
+  <div class="kanban-boards-selector" id="boardsSelector"></div>
+  <div class="kanban-board" id="kanbanBoard"></div>
+</div>
 
+<button class="fab" id="fab" onclick="fabClick()">+</button>
 
+<!-- Task Modal -->
 <div class="overlay" id="overlay" onclick="closeModal(event)">
   <div class="modal">
     <h2 id="modalTitle">Новая задача</h2>
@@ -226,15 +322,127 @@
   </div>
 </div>
 
+<!-- Edit Task Modal -->
+<div class="overlay" id="editOverlay" onclick="closeEditModal(event)">
+  <div class="modal">
+    <h2>✏️ Редактировать задачу</h2>
+    <div id="editDateFields">
+      <label>Дата *</label>
+      <input type="date" id="editDay"/>
+      <label>Время</label>
+      <input type="time" id="editTime"/>
+      <label>Место</label>
+      <input type="text" id="editPlace" placeholder="Где?"/>
+      <label>Срок выполнения</label>
+      <input type="date" id="editDeadline"/>
+    </div>
+    <label>Задача *</label>
+    <input type="text" id="editTask" placeholder="Что сделать?"/>
+    <label>Комментарий</label>
+    <textarea id="editComment" rows="2" placeholder="Дополнительные заметки..."></textarea>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeEditModal()">Отмена</button>
+      <button class="btn-save" id="btnEditSave" onclick="saveEdit()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Board Modal -->
+<div class="overlay" id="boardOverlay" onclick="closeBoardModal(event)">
+  <div class="modal">
+    <h2>📋 Новая доска</h2>
+    <label>Название доски *</label>
+    <input type="text" id="inpBoardName" placeholder="Например: Проект А"/>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeBoardModal()">Отмена</button>
+      <button class="btn-save green" onclick="createBoard()">Создать</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Kanban Card Modal -->
+<div class="overlay" id="kcardOverlay" onclick="closeKcardModal(event)">
+  <div class="modal">
+    <h2 id="kcardModalTitle">Новая карточка</h2>
+    <label>Заголовок *</label>
+    <input type="text" id="kcardTitle" placeholder="Название задачи"/>
+    <label>Описание</label>
+    <textarea id="kcardDesc" rows="2" placeholder="Подробности..."></textarea>
+    <label>Дедлайн</label>
+    <input type="date" id="kcardDeadline"/>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeKcardModal()">Отмена</button>
+      <button class="btn-save" id="kcardSaveBtn" onclick="saveKcard()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Kanban Card Modal -->
+<div class="overlay" id="kcardEditOverlay" onclick="closeKcardEditModal(event)">
+  <div class="modal">
+    <h2>✏️ Редактировать карточку</h2>
+    <label>Заголовок *</label>
+    <input type="text" id="kcardEditTitle" placeholder="Название задачи"/>
+    <label>Описание</label>
+    <textarea id="kcardEditDesc" rows="2" placeholder="Подробности..."></textarea>
+    <label>Дедлайн</label>
+    <input type="date" id="kcardEditDeadline"/>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeKcardEditModal()">Отмена</button>
+      <button class="btn-save" onclick="saveKcardEdit()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Column Modal -->
+<div class="overlay" id="colOverlay" onclick="closeColModal(event)">
+  <div class="modal">
+    <h2>Новая колонка</h2>
+    <label>Название *</label>
+    <input type="text" id="inpColName" placeholder="Например: В работе"/>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeColModal()">Отмена</button>
+      <button class="btn-save green" onclick="createColumn()">Создать</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = '/api/tasks';
 let allTasks = [];
 let filter = 'today';
+let slotMode = 'school'; // 'school' | 'hourly'
 let viewMonth = new Date();
 let addingRemember = false;
 let dragSrcId = null;
+let editingTaskId = null;
+let currentTab = 'planner';
 
-const SLOTS = [
+// ── Kanban state ──────────────────────────────
+let kanbanData = JSON.parse(localStorage.getItem('kanbanData') || 'null') || {
+  boards: [
+    {
+      id: 'b1', name: 'Основная',
+      columns: [
+        { id: 'c1', name: 'Нужно сделать', cards: [] },
+        { id: 'c2', name: 'В процессе', cards: [] },
+        { id: 'c3', name: 'Готово', cards: [] }
+      ]
+    }
+  ],
+  activeBoardId: 'b1'
+};
+let activeBoardId = kanbanData.activeBoardId || (kanbanData.boards[0]?.id);
+let addingToColId = null;
+let editingKcard = null; // {boardId, colId, cardId}
+let kcardDragSrc = null;
+
+function saveKanban() {
+  kanbanData.activeBoardId = activeBoardId;
+  localStorage.setItem('kanbanData', JSON.stringify(kanbanData));
+}
+
+const SCHOOL_SLOTS = [
   {start:'09:00',end:'9:40'},{start:'09:50',end:'10:30'},
   {start:'10:40',end:'11:20'},{start:'11:30',end:'12:10'},
   {start:'12:20',end:'13:00'},{start:'13:15',end:'13:55'},
@@ -242,15 +450,26 @@ const SLOTS = [
   {start:'16:00',end:'17:00'},{start:'17:00',end:'18:00'},
 ];
 
-// Color per day of week: вс пн вт ср чт пт сб
+function getHourlySlots() {
+  const s = [];
+  for (let h = 7; h < 22; h++) {
+    s.push({ start: `${String(h).padStart(2,'0')}:00`, end: `${String(h+1).padStart(2,'0')}:00` });
+  }
+  return s;
+}
+
+function getSlots() {
+  return slotMode === 'school' ? SCHOOL_SLOTS : getHourlySlots();
+}
+
 const DC = [
-  {c:'#CD0068',l:'#fce8f0',yw:false}, // вс
-  {c:'#00BEF2',l:'#e8f9fd',yw:false}, // пн
-  {c:'#4DB400',l:'#edf7e0',yw:false}, // вт
-  {c:'#FFCC00',l:'#fffce0',yw:true},  // ср
-  {c:'#CD0068',l:'#fce8f0',yw:false}, // чт
-  {c:'#00BEF2',l:'#e8f9fd',yw:false}, // пт
-  {c:'#4DB400',l:'#edf7e0',yw:false}, // сб
+  {c:'#CD0068',l:'#fce8f0',yw:false},
+  {c:'#00BEF2',l:'#e8f9fd',yw:false},
+  {c:'#4DB400',l:'#edf7e0',yw:false},
+  {c:'#FFCC00',l:'#fffce0',yw:true},
+  {c:'#CD0068',l:'#fce8f0',yw:false},
+  {c:'#00BEF2',l:'#e8f9fd',yw:false},
+  {c:'#4DB400',l:'#edf7e0',yw:false},
 ];
 
 const MONTHS=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
@@ -259,21 +478,38 @@ const DAYS_FULL=['воскресенье','понедельник','вторни
 function toYMD(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function normTime(t){if(!t)return'';const p=t.split(':');return p[0].padStart(2,'0')+':'+(p[1]||'00');}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
 function fmtDeadline(d){
   if(!d)return'';
   const dt=new Date(d+'T00:00:00');
   return `до ${dt.getDate()} ${MONTHS[dt.getMonth()].toLowerCase()}`;
 }
 
-// ── Filter / Nav ───────────────────────────────
+// ── Tab switch ─────────────────────────────────
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('plannerView').style.display = tab==='planner'?'block':'none';
+  document.getElementById('kanbanView').style.display = tab==='kanban'?'block':'none';
+  document.getElementById('fab').className = 'fab' + (tab==='kanban'?' kanban-mode':'') + (filter==='remember'&&tab==='planner'?' remember-mode':'');
+  if(tab==='kanban') renderKanban();
+}
 
+// ── Filter / Nav ───────────────────────────────
 function setFilter(f,btn){
   filter=f;
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('monthNav').style.display=f==='month'?'flex':'none';
-  document.getElementById('fab').classList.toggle('remember-mode',f==='remember');
+  document.getElementById('slotModeBar').style.display=f==='remember'?'none':'flex';
+  document.getElementById('fab').className='fab'+(f==='remember'?' remember-mode':'');
+  render();
+}
+
+function setSlotMode(mode, btn) {
+  slotMode = mode;
+  document.querySelectorAll('.slot-toggle button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
   render();
 }
 
@@ -297,7 +533,6 @@ function getRange(){
 }
 
 // ── Slot helpers ───────────────────────────────
-
 function slotRowHTML(slot,tasks,day,col){
   const yw=col.yw?' yw':'';
   if(!tasks||!tasks.length){
@@ -314,7 +549,9 @@ function slotRowHTML(slot,tasks,day,col){
         <div class="slot-body">
           <div class="slot-check" onclick="toggleDone(${t.id},${t.done})"></div>
           <span class="slot-tname">${esc(t.task)}${t.place&&t.place!=='__remember__'?` <span class="slot-meta">📍${esc(t.place)}</span>`:''}</span>
+          ${t.deadline?`<span class="slot-deadline-badge">🗓 ${fmtDeadline(t.deadline)}</span>`:''}
           <div class="slot-actions">
+            <button class="slot-btn edit-btn" onclick="openEditModal(${t.id})" title="Редактировать">✎</button>
             <button class="slot-btn" onclick="duplicateTask(${t.id})" title="Дублировать">⎘</button>
             <button class="slot-btn del" onclick="deleteTask(${t.id})">✕</button>
             <button class="slot-btn" id="expbtn-${t.id}" onclick="toggleSlotExtra(${t.id})">▾</button>
@@ -345,6 +582,7 @@ function taskCardHTML(t){
         ${t.deadline?`<div class="task-deadline">🗓 ${fmtDeadline(t.deadline)}</div>`:''}
       </div>
       <div class="task-actions">
+        <button class="task-btn edit-btn" onclick="openEditModal(${t.id})" title="Редактировать">✎</button>
         <button class="task-btn" onclick="duplicateTask(${t.id})">⎘</button>
         <button class="task-btn del" onclick="deleteTask(${t.id})">✕</button>
         <button class="task-btn expand" id="expbtn-${t.id}" onclick="toggleExtra(${t.id})">▾</button>
@@ -359,7 +597,6 @@ function taskCardHTML(t){
 }
 
 // ── Render ─────────────────────────────────────
-
 function render(){
   const main=document.getElementById('main');
 
@@ -368,12 +605,13 @@ function render(){
     if(!items.length){main.innerHTML='<div class="empty-msg">Список пуст — нажми + чтобы добавить</div>';return;}
     const active=items.filter(t=>!t.done);
     const done=items.filter(t=>t.done);
-    const rc=arr=>arr.map(t=>`
+    const rc=arr=>`<div class="remember-cards-row">${arr.map(t=>`
       <div class="remember-card ${t.done?'done':''}" id="card-${t.id}">
         <div class="task-top">
           <div class="remember-check" onclick="toggleDone(${t.id},${t.done})"></div>
           <div class="task-body"><div class="task-name">${esc(t.task)}</div></div>
           <div class="task-actions">
+            <button class="task-btn edit-btn" onclick="openEditModal(${t.id})" title="Редактировать">✎</button>
             <button class="task-btn" onclick="duplicateTask(${t.id})">⎘</button>
             <button class="task-btn del" onclick="deleteTask(${t.id})">✕</button>
             <button class="task-btn expand" id="expbtn-${t.id}" onclick="toggleExtra(${t.id})">▾</button>
@@ -384,7 +622,7 @@ function render(){
           <div class="files-section" id="files-${t.id}"></div>
           <label class="file-upload-btn">📎 Прикрепить файл<input class="file-input" type="file" id="finp-${t.id}" onchange="handleFile(${t.id},this)"/></label>
         </div>
-      </div>`).join('');
+      </div>`).join('')}</div>`;
     main.innerHTML=`<div class="remember-header">⭐ Не забыть <span class="remember-badge">${active.length}</span></div>
       ${rc(active)}${done.length?`<div style="color:var(--muted);font-size:13px;margin:12px 0 8px">Выполнено</div>${rc(done)}`:''}`;
     items.forEach(t=>loadFiles(t.id));
@@ -395,7 +633,6 @@ function render(){
     document.getElementById('monthLabel').textContent=MONTHS[viewMonth.getMonth()]+' '+viewMonth.getFullYear();
   }
 
-  // Build list of days to show
   let daysToShow=[];
   if(filter==='today'){
     daysToShow=[toYMD(new Date())];
@@ -411,12 +648,13 @@ function render(){
     if(!daysToShow.length){main.innerHTML='<div class="empty-msg">Задач нет</div>';return;}
   }
 
-  // Group tasks by day
   const groups={};
   allTasks.filter(t=>t.place!=='__remember__').forEach(t=>{
     if(!groups[t.day])groups[t.day]=[];
     groups[t.day].push(t);
   });
+
+  const SLOTS = getSlots();
 
   main.innerHTML=daysToShow.map(day=>{
     const d=new Date(day+'T00:00:00');
@@ -425,41 +663,61 @@ function render(){
     const label=`${d.getDate()} ${MONTHS[d.getMonth()].toLowerCase()}, ${DAYS_FULL[dow]}`;
     const tasks=groups[day]||[];
 
-    // Split tasks: slotted vs free-time
+    const slotStartTimes = new Set(SLOTS.map(s=>s.start));
+
+    // Split: slotted vs free (by time)
+    // Sort by time
+    const tasksWithTime = tasks.filter(t=>t.time).sort((a,b)=>normTime(a.time).localeCompare(normTime(b.time)));
+    const tasksNoTime = tasks.filter(t=>!t.time);
+
+    // Map tasks to slots
     const byTime={};
-    const free=[];
-    tasks.forEach(t=>{
+    const free=[...tasksNoTime];
+    tasksWithTime.forEach(t=>{
       const k=normTime(t.time);
-      if(SLOTS.some(s=>s.start===k)){
+      if(slotStartTimes.has(k)){
         if(!byTime[k])byTime[k]=[];
         byTime[k].push(t);
       } else {
+        // Find closest slot or show in free row
         free.push(t);
       }
     });
 
+    // For free tasks with time, sort by time
+    free.sort((a,b)=>{
+      if(a.time && b.time) return normTime(a.time).localeCompare(normTime(b.time));
+      if(a.time) return -1;
+      if(b.time) return 1;
+      return 0;
+    });
+
     const slotsHTML=SLOTS.map(s=>slotRowHTML(s,byTime[s.start],day,col)).join('');
-    const freeHTML=free.map(t=>taskCardHTML(t)).join('');
+    const freeHTML=free.length?`<div class="free-tasks-row">${free.map(t=>taskCardHTML(t)).join('')}</div>`:'';
 
     return `<div class="day-group" style="--dc:${col.c};--dl:${col.l}">
       <div class="day-label" style="border-color:${col.c}">${label}</div>
       <div class="slots-list">${slotsHTML}</div>${freeHTML}</div>`;
   }).join('');
 
-  // Load files for all task cards
   allTasks.filter(t=>t.place!=='__remember__').forEach(t=>loadFiles(t.id));
 }
 
 // ── CRUD ───────────────────────────────────────
-
 async function loadTasks(){
-  const r=await fetch(API);
-  allTasks=await r.json();
+  try {
+    const r=await fetch(API);
+    allTasks=await r.json();
+  } catch(e) {
+    allTasks = JSON.parse(localStorage.getItem('tasks_local')||'[]');
+  }
   render();
 }
 
 async function toggleDone(id,wasDone){
-  await fetch(`${API}/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({done:wasDone?0:1})});
+  try {
+    await fetch(`${API}/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({done:wasDone?0:1})});
+  } catch(e){}
   const t=allTasks.find(x=>x.id===id);
   if(t)t.done=wasDone?0:1;
   render();
@@ -467,16 +725,18 @@ async function toggleDone(id,wasDone){
 
 async function deleteTask(id){
   if(!confirm('Удалить задачу?'))return;
-  await fetch(`${API}/${id}`,{method:'DELETE'});
+  try { await fetch(`${API}/${id}`,{method:'DELETE'}); } catch(e){}
   allTasks=allTasks.filter(x=>x.id!==id);
   render();
 }
 
 async function duplicateTask(id){
-  const r=await fetch(`${API}/${id}/duplicate`,{method:'POST'});
-  const data=await r.json();
-  const src=allTasks.find(x=>x.id===id);
-  if(src){const newT={...src,id:data.id,done:0};const idx=allTasks.findIndex(x=>x.id===id);allTasks.splice(idx+1,0,newT);}
+  try {
+    const r=await fetch(`${API}/${id}/duplicate`,{method:'POST'});
+    const data=await r.json();
+    const src=allTasks.find(x=>x.id===id);
+    if(src){const newT={...src,id:data.id,done:0};const idx=allTasks.findIndex(x=>x.id===id);allTasks.splice(idx+1,0,newT);}
+  } catch(e){}
   render();
 }
 
@@ -493,28 +753,28 @@ function toggleSlotExtra(id){
 }
 
 // ── Comments ───────────────────────────────────
-
 const commentTimers={};
 function saveComment(id,val){
   clearTimeout(commentTimers[id]);
   commentTimers[id]=setTimeout(async()=>{
-    await fetch(`${API}/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({comment:val})});
+    try { await fetch(`${API}/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({comment:val})}); } catch(e){}
     const t=allTasks.find(x=>x.id===id);if(t)t.comment=val;
   },600);
 }
 
 // ── Files ──────────────────────────────────────
-
 async function loadFiles(taskId){
   const c=document.getElementById('files-'+taskId);if(!c)return;
-  const r=await fetch(`${API}/${taskId}/files`);
-  const files=await r.json();
-  if(!files.length){c.innerHTML='';return;}
-  c.innerHTML=`<div class="files-label">Файлы:</div>`+
-    files.map(f=>`<div class="file-item">
-      <a class="file-name" href="/api/files/${f.id}" download="${esc(f.filename)}">${esc(f.filename)}</a>
-      <button class="file-del" onclick="deleteFile(${f.id},${taskId})">✕</button>
-    </div>`).join('');
+  try {
+    const r=await fetch(`${API}/${taskId}/files`);
+    const files=await r.json();
+    if(!files.length){c.innerHTML='';return;}
+    c.innerHTML=`<div class="files-label">Файлы:</div>`+
+      files.map(f=>`<div class="file-item">
+        <a class="file-name" href="/api/files/${f.id}" download="${esc(f.filename)}">${esc(f.filename)}</a>
+        <button class="file-del" onclick="deleteFile(${f.id},${taskId})">✕</button>
+      </div>`).join('');
+  } catch(e){ c.innerHTML=''; }
 }
 
 async function handleFile(taskId,input){
@@ -523,19 +783,21 @@ async function handleFile(taskId,input){
   const reader=new FileReader();
   reader.onload=async e=>{
     const b64=e.target.result.split(',')[1];
-    await fetch(`${API}/${taskId}/files`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({filename:file.name,mimetype:file.type,data:b64})});
+    try {
+      await fetch(`${API}/${taskId}/files`,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({filename:file.name,mimetype:file.type,data:b64})});
+    } catch(e2){}
     input.value='';loadFiles(taskId);
   };
   reader.readAsDataURL(file);
 }
 
 async function deleteFile(fileId,taskId){
-  await fetch(`/api/files/${fileId}`,{method:'DELETE'});loadFiles(taskId);
+  try { await fetch(`/api/files/${fileId}`,{method:'DELETE'}); } catch(e){}
+  loadFiles(taskId);
 }
 
 // ── Drag & Drop ────────────────────────────────
-
 function dragStart(e,id){dragSrcId=id;e.dataTransfer.effectAllowed='move';document.getElementById('card-'+id).classList.add('dragging');}
 function dragOver(e){e.preventDefault();document.querySelectorAll('.task-card.drag-over').forEach(el=>el.classList.remove('drag-over'));e.currentTarget.classList.add('drag-over');}
 function dragDrop(e,tId){
@@ -547,7 +809,7 @@ function dragDrop(e,tId){
   const[moved]=allTasks.splice(si,1);allTasks.splice(ti,0,moved);
   const upd=allTasks.map((t,i)=>({id:t.id,sort_order:i}));
   allTasks.forEach((t,i)=>t.sort_order=i);
-  fetch('/api/reorder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:upd})});
+  try { fetch('/api/reorder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:upd})}); } catch(e){}
   render();
 }
 function dragEnd(){
@@ -555,8 +817,19 @@ function dragEnd(){
   dragSrcId=null;
 }
 
-// ── Modal ──────────────────────────────────────
+// ── FAB ────────────────────────────────────────
+function fabClick() {
+  if(currentTab==='kanban') {
+    // Open add column modal
+    document.getElementById('inpColName').value='';
+    document.getElementById('colOverlay').classList.add('open');
+    setTimeout(()=>document.getElementById('inpColName').focus(),100);
+  } else {
+    openModal();
+  }
+}
 
+// ── Add Task Modal ─────────────────────────────
 function openModal(){
   addingRemember=filter==='remember';
   document.getElementById('modalTitle').textContent=addingRemember?'⭐ Не забыть':'Новая задача';
@@ -606,18 +879,298 @@ async function saveTask(){
       deadline:document.getElementById('inpDeadline').value,
       comment:document.getElementById('inpComment').value};
   }
-  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const data=await r.json();
-  allTasks.push({id:data.id,done:0,sort_order:allTasks.length,...body});
+  try {
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await r.json();
+    allTasks.push({id:data.id,done:0,sort_order:allTasks.length,...body});
+  } catch(e) {
+    // local fallback
+    const id = Date.now();
+    allTasks.push({id,done:0,sort_order:allTasks.length,...body});
+    localStorage.setItem('tasks_local', JSON.stringify(allTasks));
+  }
   document.getElementById('overlay').classList.remove('open');
   render();
 }
 
+// ── Edit Task Modal ────────────────────────────
+function openEditModal(id) {
+  const t = allTasks.find(x=>x.id===id);
+  if(!t) return;
+  editingTaskId = id;
+  const isRemember = t.place === '__remember__';
+  document.getElementById('editDateFields').style.display = isRemember ? 'none' : 'block';
+  document.getElementById('editDay').value = t.day || toYMD(new Date());
+  document.getElementById('editTime').value = t.time || '';
+  document.getElementById('editPlace').value = isRemember ? '' : (t.place||'');
+  document.getElementById('editDeadline').value = t.deadline || '';
+  document.getElementById('editTask').value = t.task || '';
+  document.getElementById('editComment').value = t.comment || '';
+  document.getElementById('btnEditSave').className = 'btn-save' + (isRemember ? ' yellow' : '');
+  document.getElementById('editOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('editTask').focus(),100);
+}
 
+function closeEditModal(e) {
+  if(!e||e.target===document.getElementById('editOverlay'))
+    document.getElementById('editOverlay').classList.remove('open');
+}
+
+async function saveEdit() {
+  const task = document.getElementById('editTask').value.trim();
+  if(!task){alert('Напиши задачу');return;}
+  const t = allTasks.find(x=>x.id===editingTaskId);
+  if(!t) return;
+  const isRemember = t.place === '__remember__';
+  const updates = {
+    task,
+    comment: document.getElementById('editComment').value
+  };
+  if(!isRemember) {
+    updates.day = document.getElementById('editDay').value;
+    updates.time = document.getElementById('editTime').value;
+    updates.place = document.getElementById('editPlace').value.trim();
+    updates.deadline = document.getElementById('editDeadline').value;
+  }
+  try {
+    await fetch(`${API}/${editingTaskId}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(updates)});
+  } catch(e){}
+  Object.assign(t, updates);
+  localStorage.setItem('tasks_local', JSON.stringify(allTasks));
+  document.getElementById('editOverlay').classList.remove('open');
+  render();
+}
+
+// ── KANBAN ─────────────────────────────────────
+function getActiveBoard() {
+  return kanbanData.boards.find(b=>b.id===activeBoardId);
+}
+
+function renderKanban() {
+  const sel = document.getElementById('boardsSelector');
+  sel.innerHTML = kanbanData.boards.map(b=>`
+    <div class="board-tab ${b.id===activeBoardId?'active':''}" onclick="selectBoard('${b.id}')">
+      ${esc(b.name)}
+      <span class="del-board" onclick="event.stopPropagation();deleteBoard('${b.id}')" title="Удалить доску">✕</span>
+    </div>`).join('');
+
+  const board = getActiveBoard();
+  const container = document.getElementById('kanbanBoard');
+  if(!board) { container.innerHTML='<div class="empty-msg">Нет досок</div>'; return; }
+
+  container.innerHTML = board.columns.map(col=>`
+    <div class="kanban-col" id="kcol-${col.id}"
+      ondragover="kColDragOver(event,'${col.id}')"
+      ondrop="kColDrop(event,'${col.id}')">
+      <div class="kanban-col-header">
+        <span class="kanban-col-title">${esc(col.name)}</span>
+        <span class="kanban-col-count">${col.cards.length}</span>
+        <div class="kanban-col-actions">
+          <button class="kcol-btn" onclick="deleteColumn('${col.id}')" title="Удалить колонку">✕</button>
+        </div>
+      </div>
+      <div class="kanban-cards" id="kcards-${col.id}">
+        ${col.cards.map(card=>kcardHTML(board.id, col.id, card)).join('')}
+      </div>
+      <button class="kanban-add-card" onclick="openKcardModal('${col.id}')">+ Добавить карточку</button>
+    </div>`).join('') +
+    `<div class="kanban-add-col" onclick="openColModal()"><span>+ Новая колонка</span></div>`;
+}
+
+function kcardHTML(boardId, colId, card) {
+  return `<div class="kanban-card" id="kcard-${card.id}"
+    draggable="true"
+    ondragstart="kcardDragStart(event,'${card.id}','${colId}')"
+    ondragend="kcardDragEnd(event)">
+    <div class="kanban-card-title">${esc(card.title)}</div>
+    ${card.desc?`<div class="kanban-card-desc">${esc(card.desc)}</div>`:''}
+    ${card.deadline?`<div class="kanban-card-deadline">🗓 ${fmtDeadline(card.deadline)}</div>`:''}
+    <div class="kcard-actions">
+      <button class="kcard-btn" onclick="openKcardEditModal('${boardId}','${colId}','${card.id}')" title="Редактировать">✎</button>
+      <button class="kcard-btn del" onclick="deleteKcard('${boardId}','${colId}','${card.id}')">✕</button>
+    </div>
+  </div>`;
+}
+
+function selectBoard(id) {
+  activeBoardId = id;
+  saveKanban();
+  renderKanban();
+}
+
+function openNewBoardModal() {
+  document.getElementById('inpBoardName').value='';
+  document.getElementById('boardOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('inpBoardName').focus(),100);
+}
+function closeBoardModal(e) {
+  if(!e||e.target===document.getElementById('boardOverlay'))
+    document.getElementById('boardOverlay').classList.remove('open');
+}
+function createBoard() {
+  const name = document.getElementById('inpBoardName').value.trim();
+  if(!name){alert('Введи название');return;}
+  const id = 'b'+Date.now();
+  kanbanData.boards.push({id, name, columns:[
+    {id:'c'+Date.now()+'1', name:'Нужно сделать', cards:[]},
+    {id:'c'+Date.now()+'2', name:'В процессе', cards:[]},
+    {id:'c'+Date.now()+'3', name:'Готово', cards:[]}
+  ]});
+  activeBoardId = id;
+  saveKanban();
+  document.getElementById('boardOverlay').classList.remove('open');
+  renderKanban();
+}
+
+function deleteBoard(id) {
+  if(kanbanData.boards.length<=1){alert('Нельзя удалить единственную доску');return;}
+  if(!confirm('Удалить доску?')) return;
+  kanbanData.boards = kanbanData.boards.filter(b=>b.id!==id);
+  if(activeBoardId===id) activeBoardId = kanbanData.boards[0].id;
+  saveKanban();
+  renderKanban();
+}
+
+function openColModal() {
+  document.getElementById('inpColName').value='';
+  document.getElementById('colOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('inpColName').focus(),100);
+}
+function closeColModal(e) {
+  if(!e||e.target===document.getElementById('colOverlay'))
+    document.getElementById('colOverlay').classList.remove('open');
+}
+function createColumn() {
+  const name = document.getElementById('inpColName').value.trim();
+  if(!name){alert('Введи название');return;}
+  const board = getActiveBoard();
+  if(!board) return;
+  board.columns.push({id:'c'+Date.now(), name, cards:[]});
+  saveKanban();
+  document.getElementById('colOverlay').classList.remove('open');
+  renderKanban();
+}
+
+function deleteColumn(colId) {
+  if(!confirm('Удалить колонку?')) return;
+  const board = getActiveBoard();
+  if(!board) return;
+  board.columns = board.columns.filter(c=>c.id!==colId);
+  saveKanban();
+  renderKanban();
+}
+
+function openKcardModal(colId) {
+  addingToColId = colId;
+  document.getElementById('kcardTitle').value='';
+  document.getElementById('kcardDesc').value='';
+  document.getElementById('kcardDeadline').value='';
+  document.getElementById('kcardOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('kcardTitle').focus(),100);
+}
+function closeKcardModal(e) {
+  if(!e||e.target===document.getElementById('kcardOverlay'))
+    document.getElementById('kcardOverlay').classList.remove('open');
+}
+function saveKcard() {
+  const title = document.getElementById('kcardTitle').value.trim();
+  if(!title){alert('Введи заголовок');return;}
+  const board = getActiveBoard();
+  if(!board) return;
+  const col = board.columns.find(c=>c.id===addingToColId);
+  if(!col) return;
+  col.cards.push({
+    id:'k'+Date.now(),
+    title,
+    desc: document.getElementById('kcardDesc').value.trim(),
+    deadline: document.getElementById('kcardDeadline').value
+  });
+  saveKanban();
+  document.getElementById('kcardOverlay').classList.remove('open');
+  renderKanban();
+}
+
+function openKcardEditModal(boardId, colId, cardId) {
+  const board = kanbanData.boards.find(b=>b.id===boardId);
+  if(!board) return;
+  const col = board.columns.find(c=>c.id===colId);
+  if(!col) return;
+  const card = col.cards.find(c=>c.id===cardId);
+  if(!card) return;
+  editingKcard = {boardId, colId, cardId};
+  document.getElementById('kcardEditTitle').value = card.title;
+  document.getElementById('kcardEditDesc').value = card.desc||'';
+  document.getElementById('kcardEditDeadline').value = card.deadline||'';
+  document.getElementById('kcardEditOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('kcardEditTitle').focus(),100);
+}
+function closeKcardEditModal(e) {
+  if(!e||e.target===document.getElementById('kcardEditOverlay'))
+    document.getElementById('kcardEditOverlay').classList.remove('open');
+}
+function saveKcardEdit() {
+  const title = document.getElementById('kcardEditTitle').value.trim();
+  if(!title){alert('Введи заголовок');return;}
+  const {boardId, colId, cardId} = editingKcard;
+  const board = kanbanData.boards.find(b=>b.id===boardId);
+  const col = board?.columns.find(c=>c.id===colId);
+  const card = col?.cards.find(c=>c.id===cardId);
+  if(!card) return;
+  card.title = title;
+  card.desc = document.getElementById('kcardEditDesc').value.trim();
+  card.deadline = document.getElementById('kcardEditDeadline').value;
+  saveKanban();
+  document.getElementById('kcardEditOverlay').classList.remove('open');
+  renderKanban();
+}
+
+function deleteKcard(boardId, colId, cardId) {
+  const board = kanbanData.boards.find(b=>b.id===boardId);
+  const col = board?.columns.find(c=>c.id===colId);
+  if(!col) return;
+  col.cards = col.cards.filter(c=>c.id!==cardId);
+  saveKanban();
+  renderKanban();
+}
+
+// ── Kanban Drag & Drop ─────────────────────────
+function kcardDragStart(e, cardId, colId) {
+  kcardDragSrc = {cardId, colId};
+  e.dataTransfer.effectAllowed='move';
+  document.getElementById('kcard-'+cardId)?.classList.add('dragging');
+}
+function kcardDragEnd(e) {
+  document.querySelectorAll('.kanban-card.dragging').forEach(el=>el.classList.remove('dragging'));
+  kcardDragSrc = null;
+}
+function kColDragOver(e, colId) {
+  e.preventDefault();
+}
+function kColDrop(e, targetColId) {
+  e.preventDefault();
+  if(!kcardDragSrc) return;
+  const {cardId, colId: srcColId} = kcardDragSrc;
+  if(srcColId === targetColId) return;
+  const board = getActiveBoard();
+  if(!board) return;
+  const srcCol = board.columns.find(c=>c.id===srcColId);
+  const tgtCol = board.columns.find(c=>c.id===targetColId);
+  if(!srcCol||!tgtCol) return;
+  const idx = srcCol.cards.findIndex(c=>c.id===cardId);
+  if(idx<0) return;
+  const [card] = srcCol.cards.splice(idx,1);
+  tgtCol.cards.push(card);
+  saveKanban();
+  renderKanban();
+}
+
+// ── Init ───────────────────────────────────────
 loadTasks();
 </script>
 </body>
 </html>
+
+
 
 
 
