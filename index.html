@@ -86,7 +86,17 @@
     .slot-extra textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:14px;font-family:inherit;resize:vertical;min-height:56px;outline:none;transition:border-color .2s;}
     .slot-extra textarea:focus{border-color:var(--blue);}
 
-    .free-tasks-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+    .free-tasks-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+
+    /* ── Inline add form (custom mode) ── */
+    .inline-add-form{display:flex;align-items:center;gap:8px;margin-top:6px;background:var(--card);border-radius:12px;padding:8px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);flex-wrap:wrap;}
+    .inline-add-form input[type=text]{flex:1;min-width:120px;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;background:#fff;}
+    .inline-add-form input[type=text]:focus{border-color:var(--blue);}
+    .inline-add-form input[type=time]{width:100px;border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;background:#fff;color:var(--text);}
+    .inline-add-form input[type=time]:focus{border-color:var(--blue);}
+    .inline-add-btn{padding:7px 16px;border-radius:8px;background:var(--dc,var(--blue));color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s;}
+    .inline-add-btn:hover{opacity:.85;}
+    .inline-add-btn.yw{color:var(--dark);}
 
     .task-card{background:var(--card);border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:grab;
       display:flex;flex-direction:column;min-width:180px;max-width:260px;flex:1 1 180px;transition:box-shadow .15s,transform .1s;}
@@ -638,10 +648,18 @@ function render(){
     mon.setDate(today.getDate()-today.getDay()+(today.getDay()===0?-6:1));
     for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);daysToShow.push(toYMD(d));}
   } else {
+    // month
     const [from,to]=getRange();
-    const taskDays=new Set(allTasks.filter(t=>t.place!=='__remember__'&&t.day>=from&&t.day<=to).map(t=>t.day));
-    daysToShow=[...taskDays].sort();
-    if(!daysToShow.length){main.innerHTML='<div class="empty-msg">Задач нет</div>';return;}
+    if(slotMode==='custom'){
+      // show all days of the month so inline-add is accessible everywhere
+      const start=new Date(from+'T00:00:00');
+      const end=new Date(to+'T00:00:00');
+      for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)) daysToShow.push(toYMD(new Date(d)));
+    } else {
+      const taskDays=new Set(allTasks.filter(t=>t.place!=='__remember__'&&t.day>=from&&t.day<=to).map(t=>t.day));
+      daysToShow=[...taskDays].sort();
+      if(!daysToShow.length){main.innerHTML='<div class="empty-msg">Задач нет</div>';return;}
+    }
   }
 
   const groups={};
@@ -662,14 +680,20 @@ function render(){
         if(a.time&&b.time)return normTime(a.time).localeCompare(normTime(b.time));
         if(a.time)return -1;if(b.time)return 1;return 0;
       });
+      const yw=col.yw?' yw':'';
+      const inlineForm=`<div class="inline-add-form" style="--dc:${col.c}">
+        <input type="time" id="iatime-${day}" placeholder="время" />
+        <input type="text" id="iatask-${day}" placeholder="Название задачи..." onkeydown="if(event.key==='Enter')inlineAdd('${day}')"/>
+        <button class="inline-add-btn${yw}" onclick="inlineAdd('${day}')">+ Добавить</button>
+      </div>`;
       return `<div class="day-group" style="--dc:${col.c};--dl:${col.l}">
         <div class="day-label" style="border-color:${col.c}"
           ondragover="dayLabelDragOver(event,'${day}')"
           ondrop="dayLabelDrop(event,'${day}')"
           ondragleave="dayLabelDragLeave('${day}')"
           id="daylabel-${day}">${label}</div>
-        ${sorted.length?`<div class="free-tasks-row">${sorted.map(t=>taskCardHTML(t)).join('')}</div>`
-          :'<div style="color:var(--muted);font-size:13px;padding:8px 0">Нет задач — нажми + чтобы добавить</div>'}
+        ${sorted.length?`<div class="free-tasks-row">${sorted.map(t=>taskCardHTML(t)).join('')}</div>`:''}
+        ${inlineForm}
         </div>`;
     }
 
@@ -1191,6 +1215,31 @@ function kColDrop(e,targetColId){
   const [card]=srcCol.cards.splice(idx,1);
   tgtCol.cards.push(card);
   saveKanban();renderKanban();
+}
+
+// ── Inline add (custom mode) ─────────────────────
+async function inlineAdd(day){
+  const taskEl=document.getElementById('iatask-'+day);
+  const timeEl=document.getElementById('iatime-'+day);
+  if(!taskEl)return;
+  const task=taskEl.value.trim();
+  if(!task){taskEl.focus();taskEl.style.borderColor='var(--pink)';setTimeout(()=>taskEl.style.borderColor='',1000);return;}
+  const body={day,task,time:timeEl?timeEl.value:'',place:'',deadline:'',comment:''};
+  try{
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await r.json();
+    allTasks.push({id:data.id,done:0,sort_order:allTasks.length,...body});
+  }catch(e){
+    const id=Date.now();
+    allTasks.push({id,done:0,sort_order:allTasks.length,...body});
+    localStorage.setItem('tasks_local',JSON.stringify(allTasks));
+  }
+  render();
+  // restore focus to the same day's input after re-render
+  setTimeout(()=>{
+    const el=document.getElementById('iatask-'+day);
+    if(el)el.focus();
+  },50);
 }
 
 // ── Cross-day drag (drop onto day label) ─────────
