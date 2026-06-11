@@ -88,6 +88,15 @@
 
     .free-tasks-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
 
+    /* ── Custom week nav bar ── */
+    .custom-week-bar{display:flex;align-items:center;gap:8px;padding:10px 16px 0;max-width:700px;margin:0 auto;flex-wrap:wrap;}
+    .cwb-arrow{background:var(--card);border:2px solid var(--border);border-radius:50%;width:34px;height:34px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;line-height:1;}
+    .cwb-arrow:hover{background:var(--dark);color:#fff;border-color:var(--dark);}
+    .cwb-label{font-weight:700;font-size:15px;min-width:180px;text-align:center;}
+    .cwb-today{padding:6px 14px;border-radius:20px;border:2px solid var(--border);background:var(--card);font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
+    .cwb-today:hover{background:var(--dark);color:#fff;border-color:var(--dark);}
+    .cwb-remember{margin-left:auto !important;}
+
     /* ── Inline add form (custom mode) ── */
     .inline-add-form{display:flex;align-items:center;gap:8px;margin-top:6px;background:var(--card);border-radius:12px;padding:8px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);flex-wrap:wrap;}
     .inline-add-form input[type=text]{flex:1;min-width:120px;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;background:#fff;}
@@ -257,17 +266,28 @@
 </div>
 
 <div id="plannerView">
-  <div class="filters">
-    <button class="filter-btn active" onclick="setFilter('today',this)">Сегодня</button>
-    <button class="filter-btn" onclick="setFilter('week',this)">Эта неделя</button>
-    <button class="filter-btn" onclick="setFilter('month',this)">Этот месяц</button>
-    <button class="filter-btn remember" onclick="setFilter('remember',this)">⭐ Не забыть</button>
+  <!-- School mode: filter tabs -->
+  <div class="filters" id="schoolFilters">
+    <button class="filter-btn active" id="fBtn-today" onclick="setFilter('today',this)">Сегодня</button>
+    <button class="filter-btn" id="fBtn-week" onclick="setFilter('week',this)">Эта неделя</button>
+    <button class="filter-btn" id="fBtn-month" onclick="setFilter('month',this)">Этот месяц</button>
+    <button class="filter-btn remember" id="fBtn-remember" onclick="setFilter('remember',this)">⭐ Не забыть</button>
   </div>
   <div class="slot-mode-bar" id="slotModeBar">
     <span>Режим времени:</span>
     <div class="slot-toggle">
       <button id="btnSchool" class="active" onclick="setSlotMode('school',this)">🏫 Школьные слоты</button>
       <button id="btnCustom" onclick="setSlotMode('custom',this)">✍️ Своё время</button>
+    </div>
+  </div>
+  <!-- Custom mode: week nav bar -->
+  <div id="customWeekNav" style="display:none">
+    <div class="custom-week-bar">
+      <button class="cwb-arrow" onclick="customWeekShift(-1)">&#8249;</button>
+      <span id="customWeekLabel" class="cwb-label"></span>
+      <button class="cwb-arrow" onclick="customWeekShift(1)">&#8250;</button>
+      <button class="cwb-today" onclick="customWeekToday()">Сегодня</button>
+      <button class="filter-btn remember cwb-remember" onclick="setCustomRemember()">⭐ Не забыть</button>
     </div>
   </div>
   <div class="month-nav" id="monthNav" style="display:none">
@@ -484,14 +504,63 @@ function switchTab(tab,btn){
   if(tab==='kanban') renderKanban();
 }
 
+// ── Custom week state ────────────────────────────
+let customWeekStart = null; // Monday of current custom week
+
+function getCustomWeekMonday(ref){
+  const d=new Date(ref||new Date());d.setHours(0,0,0,0);
+  const day=d.getDay();
+  d.setDate(d.getDate()-(day===0?6:day-1));
+  return d;
+}
+function updateCustomWeekLabel(){
+  if(!customWeekStart)return;
+  const sun=new Date(customWeekStart);sun.setDate(customWeekStart.getDate()+6);
+  const s=customWeekStart;
+  document.getElementById('customWeekLabel').textContent=
+    `${s.getDate()} ${MONTHS[s.getMonth()].slice(0,3).toLowerCase()} — ${sun.getDate()} ${MONTHS[sun.getMonth()].slice(0,3).toLowerCase()} ${sun.getFullYear()}`;
+}
+function customWeekShift(dir){
+  customWeekStart=new Date(customWeekStart);
+  customWeekStart.setDate(customWeekStart.getDate()+dir*7);
+  updateCustomWeekLabel();render();
+}
+function customWeekToday(){
+  customWeekStart=getCustomWeekMonday();
+  updateCustomWeekLabel();render();
+}
+function setCustomRemember(){
+  filter='remember';
+  document.getElementById('fab').className='fab remember-mode';
+  render();
+}
+
+function applyModeUI(){
+  const isCustom=slotMode==='custom';
+  document.getElementById('schoolFilters').style.display=isCustom?'none':'flex';
+  document.getElementById('customWeekNav').style.display=isCustom?'block':'none';
+  document.getElementById('monthNav').style.display=(!isCustom&&filter==='month')?'flex':'none';
+  document.getElementById('slotModeBar').style.display=(filter==='remember')?'none':'flex';
+  if(isCustom&&!customWeekStart){
+    customWeekStart=getCustomWeekMonday();
+    updateCustomWeekLabel();
+  }
+  if(isCustom) updateCustomWeekLabel();
+}
+
 // ── Filters ─────────────────────────────────────
 function setFilter(f,btn){
   filter=f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll('#schoolFilters .filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
   document.getElementById('monthNav').style.display=f==='month'?'flex':'none';
   document.getElementById('slotModeBar').style.display=f==='remember'?'none':'flex';
   document.getElementById('fab').className='fab'+(f==='remember'?' remember-mode':'');
+  if(slotMode==='custom'&&f==='remember'){
+    document.getElementById('customWeekNav').style.display='none';
+  } else if(slotMode==='custom'){
+    document.getElementById('customWeekNav').style.display='block';
+  }
   render();
 }
 
@@ -499,6 +568,9 @@ function setSlotMode(mode,btn){
   slotMode=mode;
   document.querySelectorAll('.slot-toggle button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  // reset remember if switching back
+  if(filter==='remember') filter='today';
+  applyModeUI();
   render();
 }
 
@@ -607,7 +679,6 @@ function render(){
 
   if(filter==='remember'){
     const items=allTasks.filter(t=>t.place==='__remember__');
-    if(!items.length){main.innerHTML='<div class="empty-msg">Список пуст — нажми + чтобы добавить</div>';return;}
     const active=items.filter(t=>!t.done);
     const done=items.filter(t=>t.done);
     const rc=arr=>`<div class="remember-cards-row">${arr.map(t=>`
@@ -632,15 +703,31 @@ function render(){
           <textarea placeholder="Комментарий..." onblur="saveComment(${t.id},this.value)">${esc(t.comment||'')}</textarea>
         </div>
       </div>`).join('')}</div>`;
+    const inlineRemember=`<div class="inline-add-form" style="--dc:var(--yellow)">
+      <input type="text" id="iatask-remember" placeholder="Что не забыть?..."
+        onkeydown="if(event.key==='Enter')inlineAddRemember()"/>
+      <button class="inline-add-btn yw" onclick="inlineAddRemember()">+ Добавить</button>
+    </div>`;
     main.innerHTML=`<div class="remember-header">⭐ Не забыть <span class="remember-badge">${active.length}</span></div>
-      ${rc(active)}${done.length?`<div style="color:var(--muted);font-size:13px;margin:12px 0 8px">Выполнено</div>${rc(done)}`:''}`;
+      ${inlineRemember}
+      ${active.length?rc(active):''}
+      ${done.length?`<div style="color:var(--muted);font-size:13px;margin:12px 0 8px">Выполнено</div>${rc(done)}`:''}`;
+    setTimeout(()=>document.getElementById('iatask-remember')?.focus(),50);
     return;
   }
 
   if(filter==='month') document.getElementById('monthLabel').textContent=MONTHS[viewMonth.getMonth()]+' '+viewMonth.getFullYear();
 
+  // In custom mode, always show the current custom week (7 days)
   let daysToShow=[];
-  if(filter==='today'){
+  if(slotMode==='custom'){
+    if(!customWeekStart) customWeekStart=getCustomWeekMonday();
+    for(let i=0;i<7;i++){
+      const d=new Date(customWeekStart);d.setDate(customWeekStart.getDate()+i);
+      daysToShow.push(toYMD(d));
+    }
+    updateCustomWeekLabel();
+  } else if(filter==='today'){
     daysToShow=[toYMD(new Date())];
   } else if(filter==='week'){
     const today=new Date();today.setHours(0,0,0,0);
@@ -648,18 +735,10 @@ function render(){
     mon.setDate(today.getDate()-today.getDay()+(today.getDay()===0?-6:1));
     for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);daysToShow.push(toYMD(d));}
   } else {
-    // month
     const [from,to]=getRange();
-    if(slotMode==='custom'){
-      // show all days of the month so inline-add is accessible everywhere
-      const start=new Date(from+'T00:00:00');
-      const end=new Date(to+'T00:00:00');
-      for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)) daysToShow.push(toYMD(new Date(d)));
-    } else {
-      const taskDays=new Set(allTasks.filter(t=>t.place!=='__remember__'&&t.day>=from&&t.day<=to).map(t=>t.day));
-      daysToShow=[...taskDays].sort();
-      if(!daysToShow.length){main.innerHTML='<div class="empty-msg">Задач нет</div>';return;}
-    }
+    const taskDays=new Set(allTasks.filter(t=>t.place!=='__remember__'&&t.day>=from&&t.day<=to).map(t=>t.day));
+    daysToShow=[...taskDays].sort();
+    if(!daysToShow.length){main.innerHTML='<div class="empty-msg">Задач нет</div>';return;}
   }
 
   const groups={};
@@ -1217,6 +1296,26 @@ function kColDrop(e,targetColId){
   saveKanban();renderKanban();
 }
 
+// ── Inline add remember ──────────────────────────
+async function inlineAddRemember(){
+  const taskEl=document.getElementById('iatask-remember');
+  if(!taskEl)return;
+  const task=taskEl.value.trim();
+  if(!task){taskEl.focus();taskEl.style.borderColor='var(--pink)';setTimeout(()=>taskEl.style.borderColor='',1000);return;}
+  const body={day:toYMD(new Date()),task,time:'',place:'__remember__',comment:''};
+  try{
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await r.json();
+    allTasks.push({id:data.id,done:0,sort_order:allTasks.length,...body});
+  }catch(e){
+    const id=Date.now();
+    allTasks.push({id,done:0,sort_order:allTasks.length,...body});
+    localStorage.setItem('tasks_local',JSON.stringify(allTasks));
+  }
+  render();
+  setTimeout(()=>document.getElementById('iatask-remember')?.focus(),50);
+}
+
 // ── Inline add (custom mode) ─────────────────────
 async function inlineAdd(day){
   const taskEl=document.getElementById('iatask-'+day);
@@ -1270,6 +1369,7 @@ loadTasks();
 </script>
 </body>
 </html>
+
 
 
 
