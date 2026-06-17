@@ -87,8 +87,8 @@
     .slot-wrap.yw .slot-add{color:var(--dark);}
     .slot-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--dc,var(--blue));cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s;}
     .slot-wrap.done .slot-check{background:var(--green);border-color:var(--green);}
-    .slot-check::after{content:'checkmark';color:#fff;font-size:11px;display:none;}
-    .slot-wrap.done .slot-check::after{display:block;}
+    .slot-check::after{content:'';display:none;}
+    .slot-wrap.done .slot-check{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3 4 7-8' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:12px;}
     .slot-tname{font-weight:600;font-size:14px;flex:1;min-width:0;word-break:break-word;}
     .slot-wrap.done .slot-tname{text-decoration:line-through;color:var(--muted);}
     .slot-meta{font-size:12px;color:var(--muted);font-weight:400;}
@@ -135,8 +135,8 @@
     .drag-handle{color:#ccc;font-size:18px;cursor:grab;flex-shrink:0;margin-top:2px;user-select:none;}
     .task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--blue);cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:.2s;}
     .task-card.done .task-check{background:var(--green);border-color:var(--green);}
-    .task-check::after{content:'checkmark';color:#fff;font-size:13px;display:none;}
-    .task-card.done .task-check::after{display:block;}
+    .task-check::after{content:'';display:none;}
+    .task-card.done .task-check{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3 4 7-8' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:12px;}
     .task-body{flex:1;min-width:0;}
     .task-name{font-weight:600;font-size:14px;word-break:break-word;}
     .task-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
@@ -175,8 +175,9 @@
     .remember-card.done .task-name{text-decoration:line-through;}
     .remember-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--yellow);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s;}
     .remember-card.done .remember-check{background:var(--green);border-color:var(--green);}
-    .remember-check::after{content:'checkmark';color:#fff;font-size:13px;display:none;}
-    .remember-card.done .remember-check::after{display:block;}
+    .remember-check::after{content:'';display:none;}
+    .remember-card.done .remember-check{background:var(--green);border-color:var(--green);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3 4 7-8' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:12px;}
+    .slot-check:focus-visible,.task-check:focus-visible,.remember-check:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
 
     .empty-msg{text-align:center;color:var(--muted);padding:60px 20px;font-size:16px;}
 
@@ -353,13 +354,81 @@
       .school-name{font-size:10px;}
       .cwb-label{font-size:12px;}
     }
+
+    #welcomeScreen{position:fixed;inset:0;background:var(--dark);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;}
+    .welcome-logo{margin-bottom:28px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+    .welcome-school{color:rgba(255,255,255,.7);font-size:15px;font-weight:600;letter-spacing:.5px;text-align:center;}
+    .welcome-title{color:#fff;font-size:26px;font-weight:800;text-align:center;margin-bottom:8px;line-height:1.2;}
+    .welcome-sub{color:rgba(255,255,255,.4);font-size:14px;text-align:center;margin-bottom:36px;}
+    .user-cards{display:flex;flex-direction:column;gap:14px;width:100%;max-width:320px;}
+    .user-card{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);border-radius:18px;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:16px;transition:.2s;-webkit-tap-highlight-color:transparent;}
+    .user-card:hover,.user-card:active{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.25);transform:translateY(-1px);}
+    .user-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;flex-shrink:0;}
+    .user-card-info{flex:1;}
+    .user-card-name{color:#fff;font-size:17px;font-weight:700;line-height:1.2;}
+    .user-card-role{color:rgba(255,255,255,.45);font-size:13px;margin-top:2px;}
+    .user-card-arrow{color:rgba(255,255,255,.3);font-size:20px;}
+
+    /* ── User switcher in header ── */
+    .hdr-switcher{margin-left:auto;display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 10px 4px 4px;border-radius:20px;border:1.5px solid rgba(255,255,255,.15);transition:.15s;}
+    .hdr-switcher:hover{background:rgba(255,255,255,.08);}
+    .hdr-avatar-sm{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+    .hdr-user-name{color:#fff;font-size:13px;font-weight:700;white-space:nowrap;}
+    .hdr-user-name span{color:var(--blue);}
+    .hdr-switch-ico{color:rgba(255,255,255,.4);font-size:14px;}
+
+    /* ── Chat ── */
+    .tab-btn.chat-tab .chat-unread{display:inline-flex;align-items:center;justify-content:center;background:var(--pink);color:#fff;border-radius:10px;font-size:11px;font-weight:700;min-width:18px;height:18px;padding:0 5px;margin-left:5px;vertical-align:middle;}
+    #chatView{padding:0 0 0 0;display:flex;flex-direction:column;height:calc(100vh - 116px);}
+    .chat-messages{flex:1;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;gap:10px;}
+    .chat-msg{max-width:78%;display:flex;flex-direction:column;}
+    .chat-msg.mine{align-self:flex-end;align-items:flex-end;}
+    .chat-msg.theirs{align-self:flex-start;align-items:flex-start;}
+    .chat-bubble{padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.4;word-break:break-word;}
+    .chat-msg.mine .chat-bubble{background:var(--blue);color:#fff;border-bottom-right-radius:4px;}
+    .chat-msg.theirs .chat-bubble{background:var(--card);color:var(--text);border-bottom-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+    .chat-meta{font-size:11px;color:var(--muted);margin-top:3px;padding:0 4px;}
+    .chat-sender{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:2px;padding:0 4px;}
+    .chat-date-divider{text-align:center;font-size:12px;color:var(--muted);margin:6px 0;position:relative;}
+    .chat-date-divider::before,.chat-date-divider::after{content:'';position:absolute;top:50%;width:30%;height:1px;background:var(--border);}
+    .chat-date-divider::before{left:0;} .chat-date-divider::after{right:0;}
+    .chat-input-bar{display:flex;gap:8px;padding:10px 12px;background:var(--card);border-top:1px solid var(--border);align-items:flex-end;}
+    .chat-input-bar textarea{flex:1;border:1.5px solid var(--border);border-radius:14px;padding:10px 12px;font-size:15px;font-family:inherit;resize:none;outline:none;max-height:100px;line-height:1.4;transition:border-color .2s;}
+    .chat-input-bar textarea:focus{border-color:var(--blue);}
+    .chat-send-btn{width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;border:none;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;}
+    .chat-send-btn:hover{background:var(--dark);}
+    .chat-empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:15px;}
+    @media(max-width:600px){
+      .hdr-user-name{font-size:12px;}
+      .hdr-avatar-sm{width:26px;height:26px;font-size:11px;}
+      #chatView{height:calc(100vh - 108px);}
+      .chat-bubble{font-size:13px;padding:8px 12px;}
+    }
+
+    /* ── Task row (custom / своё время mode) ── */
+    .free-tasks-col{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
+    .task-row-item{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:10px;padding:9px 10px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+    .task-row-item.done .tri-name{text-decoration:line-through;color:var(--muted);}
+    .task-row-item .task-check.tri{width:20px;height:20px;flex-shrink:0;margin-top:0;border-color:var(--blue);}
+    .task-row-item.done .task-check.tri{background:var(--green);border-color:var(--green);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3 4 7-8' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:12px;}
+    .tri-time{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0;background:var(--light);border-radius:6px;padding:2px 6px;}
+    .tri-name{font-size:14px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .tri-actions{display:flex;gap:2px;flex-shrink:0;}
+    .task-tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;border-radius:8px;padding:1px 7px;flex-shrink:0;}
+    .task-tag.personal{background:#f0e8ff;color:#7c3aed;}
+
+    /* ── Custom mode sub-filter tabs ── */
+    .custom-filter-tabs{display:flex;gap:6px;padding:8px 16px 0;overflow-x:auto;}
+    .custom-filter-tabs::-webkit-scrollbar{display:none;}
+    .cft-btn{padding:6px 14px;border-radius:16px;border:2px solid var(--border);background:var(--card);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--muted);transition:.2s;flex-shrink:0;}
+    .cft-btn.active{background:var(--dark);color:#fff;border-color:var(--dark);}
   </style>
 </head>
 <body>
 
 <header>
   <div class="logo-wrap">
-    <svg width="38" height="38" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <svg width="32" height="32" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
       <rect x="1"  y="1"  width="13" height="13" rx="2" fill="#00BEF2"/>
       <rect x="17" y="1"  width="13" height="13" rx="2" fill="#CD0068"/>
       <rect x="34" y="1"  width="13" height="13" rx="2" fill="#4DB400"/>
@@ -387,21 +456,18 @@
     <button class="filter-btn" id="fBtn-month" onclick="setFilter('month',this)">Этот месяц</button>
     <button class="filter-btn remember" id="fBtn-remember" onclick="setFilter('remember',this)">⭐ Не забыть</button>
   </div>
+  <!-- Custom mode: same filter tabs, reuse setFilter -->
+  <div class="filters" id="customFilters" style="display:none">
+    <button class="filter-btn active" id="cBtn-today" onclick="setFilter('today',this)">Сегодня</button>
+    <button class="filter-btn" id="cBtn-week" onclick="setFilter('week',this)">Эта неделя</button>
+    <button class="filter-btn" id="cBtn-month" onclick="setFilter('month',this)">Этот месяц</button>
+    <button class="filter-btn remember" id="cBtn-remember" onclick="setFilter('remember',this)">⭐ Не забыть</button>
+  </div>
   <div class="slot-mode-bar" id="slotModeBar">
     <span>Режим времени:</span>
     <div class="slot-toggle">
       <button id="btnSchool" class="active" onclick="setSlotMode('school',this)">🏫 Школьные слоты</button>
       <button id="btnCustom" onclick="setSlotMode('custom',this)">✍️ Своё время</button>
-    </div>
-  </div>
-  <!-- Custom mode: week nav bar -->
-  <div id="customWeekNav" style="display:none">
-    <div class="custom-week-bar">
-      <button class="cwb-arrow" onclick="customWeekShift(-1)">&#8249;</button>
-      <span id="customWeekLabel" class="cwb-label"></span>
-      <button class="cwb-arrow" onclick="customWeekShift(1)">&#8250;</button>
-      <button class="cwb-today" onclick="customWeekToday()">Сегодня</button>
-      <button class="filter-btn remember cwb-remember" onclick="setCustomRemember()">⭐ Не забыть</button>
     </div>
   </div>
   <div class="month-nav" id="monthNav" style="display:none">
@@ -439,6 +505,8 @@
     </div>
     <label>Задача *</label>
     <input type="text" id="inpTask" placeholder="Что сделать?"/>
+    <label>Тег</label>
+    <select id="inpTag"><option value="">Без тега</option><option value="personal">🏠 Личная</option></select>
     <label>Комментарий</label>
     <textarea id="inpComment" rows="2" placeholder="Дополнительные заметки..."></textarea>
     <div class="modal-btns">
@@ -464,6 +532,8 @@
     </div>
     <label>Задача *</label>
     <input type="text" id="editTask" placeholder="Что сделать?"/>
+    <label>Тег</label>
+    <select id="editTag"><option value="">Без тега</option><option value="personal">🏠 Личная</option></select>
     <label>Комментарий</label>
     <textarea id="editComment" rows="2"></textarea>
     <div class="modal-btns">
@@ -619,62 +689,27 @@ function switchTab(tab,btn){
 }
 
 // ── Custom week state ────────────────────────────
-let customWeekStart = null; // Monday of current custom week
-
-function getCustomWeekMonday(ref){
-  const d=new Date(ref||new Date());d.setHours(0,0,0,0);
-  const day=d.getDay();
-  d.setDate(d.getDate()-(day===0?6:day-1));
-  return d;
-}
-function updateCustomWeekLabel(){
-  if(!customWeekStart)return;
-  const sun=new Date(customWeekStart);sun.setDate(customWeekStart.getDate()+6);
-  const s=customWeekStart;
-  document.getElementById('customWeekLabel').textContent=
-    `${s.getDate()} ${MONTHS[s.getMonth()].slice(0,3).toLowerCase()} — ${sun.getDate()} ${MONTHS[sun.getMonth()].slice(0,3).toLowerCase()} ${sun.getFullYear()}`;
-}
-function customWeekShift(dir){
-  customWeekStart=new Date(customWeekStart);
-  customWeekStart.setDate(customWeekStart.getDate()+dir*7);
-  updateCustomWeekLabel();render();
-}
-function customWeekToday(){
-  customWeekStart=getCustomWeekMonday();
-  updateCustomWeekLabel();render();
-}
-function setCustomRemember(){
-  filter='remember';
-  document.getElementById('fab').className='fab remember-mode';
-  render();
-}
 
 function applyModeUI(){
   const isCustom=slotMode==='custom';
   document.getElementById('schoolFilters').style.display=isCustom?'none':'flex';
-  document.getElementById('customWeekNav').style.display=isCustom?'block':'none';
-  document.getElementById('monthNav').style.display=(!isCustom&&filter==='month')?'flex':'none';
+  document.getElementById('customFilters').style.display=isCustom?'flex':'none';
+  document.getElementById('monthNav').style.display=(filter==='month')?'flex':'none';
   document.getElementById('slotModeBar').style.display=(filter==='remember')?'none':'flex';
-  if(isCustom&&!customWeekStart){
-    customWeekStart=getCustomWeekMonday();
-    updateCustomWeekLabel();
-  }
-  if(isCustom) updateCustomWeekLabel();
 }
 
 // ── Filters ─────────────────────────────────────
 function setFilter(f,btn){
   filter=f;
-  document.querySelectorAll('#schoolFilters .filter-btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
+  document.querySelectorAll('#schoolFilters .filter-btn, #customFilters .filter-btn').forEach(b=>b.classList.remove('active'));
+  // Activate the matching button in BOTH bars so switching slotMode keeps state visually correct
+  const idMap={today:'today',week:'week',month:'month',remember:'remember'};
+  const suffix=idMap[f];
+  document.getElementById('fBtn-'+suffix)?.classList.add('active');
+  document.getElementById('cBtn-'+suffix)?.classList.add('active');
   document.getElementById('monthNav').style.display=f==='month'?'flex':'none';
   document.getElementById('slotModeBar').style.display=f==='remember'?'none':'flex';
   document.getElementById('fab').className='fab'+(f==='remember'?' remember-mode':'');
-  if(slotMode==='custom'&&f==='remember'){
-    document.getElementById('customWeekNav').style.display='none';
-  } else if(slotMode==='custom'){
-    document.getElementById('customWeekNav').style.display='block';
-  }
   render();
 }
 
@@ -682,8 +717,6 @@ function setSlotMode(mode,btn){
   slotMode=mode;
   document.querySelectorAll('.slot-toggle button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  // reset remember if switching back
-  if(filter==='remember') filter='today';
   applyModeUI();
   render();
 }
@@ -734,8 +767,9 @@ function slotRowHTML(slot,tasks,day,col){
       <div class="slot-row">
         <div class="slot-time"><span class="ts">${slot.start}</span><span class="te">${slot.end}</span></div>
         <div class="slot-body">
-          <div class="slot-check" onclick="toggleDone(${t.id},${t.done})"></div>
+          <div class="slot-check" role="checkbox" aria-checked="${t.done?'true':'false'}" tabindex="0" onclick="toggleDone(${t.id},${t.done})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDone(${t.id},${t.done});}"></div>
           <span class="slot-tname">${esc(t.task)}${t.place&&t.place!=='__remember__'?` <span class="slot-meta">📍${esc(t.place)}</span>`:''}</span>
+          ${tagBadge(t.tag)}
           ${deadlineBadge(t.deadline,'slot-deadline-badge')}
           <div class="slot-actions">
             <button class="slot-btn edit-btn" onclick="openEditModal(${t.id})">✎</button>
@@ -753,6 +787,12 @@ function slotRowHTML(slot,tasks,day,col){
     </div>`).join('');
 }
 
+function tagBadge(tag){
+  if(!tag||tag==='')return'';
+  if(tag==='personal')return`<span class="task-tag personal">🏠 Личная</span>`;
+  return'';
+}
+
 function taskCardHTML(t){
   return `<div class="task-card ${t.done?'done':''}" id="card-${t.id}" data-taskid="${t.id}"
     draggable="true"
@@ -763,13 +803,14 @@ function taskCardHTML(t){
     ondragleave="cardDragLeave(event,${t.id})">
     <div class="task-top">
       <span class="drag-handle">⠿</span>
-      <div class="task-check" onclick="toggleDone(${t.id},${t.done})"></div>
+      <div class="task-check" role="checkbox" aria-checked="${t.done?'true':'false'}" tabindex="0" onclick="toggleDone(${t.id},${t.done})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDone(${t.id},${t.done});}"></div>
       <div class="task-body">
         <div class="task-name">${esc(t.task)}</div>
         <div class="task-meta">
           ${t.time?`<span>⏰ ${t.time}</span>`:''}
           ${t.place&&t.place!=='__remember__'?`<span>📍 ${t.place}</span>`:''}
         </div>
+        ${tagBadge(t.tag)}
         ${deadlineBadge(t.deadline,'task-deadline')}
       </div>
       <div class="task-actions">
@@ -783,6 +824,27 @@ function taskCardHTML(t){
       <textarea placeholder="Комментарий..." onblur="saveComment(${t.id},this.value)">${esc(t.comment||'')}</textarea>
       <div class="files-section" id="files-${t.id}"></div>
       <label class="file-upload-btn">📎 Прикрепить файл<input class="file-input" type="file" id="finp-${t.id}" onchange="handleFile(${t.id},this)"/></label>
+    </div>
+  </div>`;
+}
+
+// Compact single-line row for custom (своё время) mode
+function taskCardRowHTML(t){
+  return `<div class="task-row-item ${t.done?'done':''}" id="card-${t.id}" data-taskid="${t.id}"
+    draggable="true"
+    ondragstart="plannerDragStart(event,${t.id},'','${t.day}')"
+    ondragend="plannerDragEnd(event)"
+    ondragover="cardDragOver(event,${t.id})"
+    ondrop="cardDrop(event,${t.id})"
+    ondragleave="cardDragLeave(event,${t.id})">
+    <div class="task-check tri" role="checkbox" aria-checked="${t.done?'true':'false'}" tabindex="0" onclick="toggleDone(${t.id},${t.done})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDone(${t.id},${t.done});}"></div>
+    ${t.time?`<span class="tri-time">⏰ ${t.time}</span>`:''}
+    <span class="tri-name">${esc(t.task)}</span>
+    ${tagBadge(t.tag)}
+    ${t.deadline?`<span class="tri-deadline">${deadlineBadge(t.deadline,'task-deadline')}</span>`:''}
+    <div class="tri-actions">
+      <button class="task-btn edit-btn" onclick="openEditModal(${t.id})">✎</button>
+      <button class="task-btn del" onclick="deleteTask(${t.id})">✕</button>
     </div>
   </div>`;
 }
@@ -804,8 +866,8 @@ function render(){
         ondrop="cardDrop(event,${t.id})"
         ondragleave="cardDragLeave(event,${t.id})">
         <div class="task-top">
-          <div class="remember-check" onclick="toggleDone(${t.id},${t.done})"></div>
-          <div class="task-body"><div class="task-name">${esc(t.task)}</div></div>
+          <div class="remember-check" role="checkbox" aria-checked="${t.done?'true':'false'}" tabindex="0" onclick="toggleDone(${t.id},${t.done})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDone(${t.id},${t.done});}"></div>
+          <div class="task-body"><div class="task-name">${esc(t.task)}</div>${tagBadge(t.tag)}</div>
           <div class="task-actions">
             <button class="task-btn edit-btn" onclick="openEditModal(${t.id})">✎</button>
             <button class="task-btn" onclick="duplicateTask(${t.id})">⎘</button>
@@ -819,7 +881,7 @@ function render(){
       </div>`).join('')}</div>`;
     const inlineRemember=`<div class="inline-add-form" style="--dc:var(--yellow)">
       <input type="text" id="iatask-remember" placeholder="Что не забыть?..."
-        onkeydown="if(event.key==='Enter')inlineAddRemember()"/>
+        onkeydown="if(event.key==='Enter'){event.preventDefault();inlineAddRemember();}"/>
       <button class="inline-add-btn yw" onclick="inlineAddRemember()">+ Добавить</button>
     </div>`;
     main.innerHTML=`<div class="remember-header">⭐ Не забыть <span class="remember-badge">${active.length}</span></div>
@@ -832,16 +894,8 @@ function render(){
 
   if(filter==='month') document.getElementById('monthLabel').textContent=MONTHS[viewMonth.getMonth()]+' '+viewMonth.getFullYear();
 
-  // In custom mode, always show the current custom week (7 days)
   let daysToShow=[];
-  if(slotMode==='custom'){
-    if(!customWeekStart) customWeekStart=getCustomWeekMonday();
-    for(let i=0;i<7;i++){
-      const d=new Date(customWeekStart);d.setDate(customWeekStart.getDate()+i);
-      daysToShow.push(toYMD(d));
-    }
-    updateCustomWeekLabel();
-  } else if(filter==='today'){
+  if(filter==='today'){
     daysToShow=[toYMD(new Date())];
   } else if(filter==='week'){
     const today=new Date();today.setHours(0,0,0,0);
@@ -849,10 +903,18 @@ function render(){
     mon.setDate(today.getDate()-today.getDay()+(today.getDay()===0?-6:1));
     for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);daysToShow.push(toYMD(d));}
   } else {
+    // month
     const [from,to]=getRange();
-    const taskDays=new Set(allTasks.filter(t=>t.place!=='__remember__'&&t.day>=from&&t.day<=to).map(t=>t.day));
-    daysToShow=[...taskDays].sort();
-    if(!daysToShow.length){main.innerHTML='<div class="empty-msg">Задач нет</div>';return;}
+    if(slotMode==='custom'){
+      // show every day of the month so inline-add is reachable even on empty days
+      const start=new Date(from+'T00:00:00');
+      const end=new Date(to+'T00:00:00');
+      for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)) daysToShow.push(toYMD(new Date(d)));
+    } else {
+      const taskDays=new Set(allTasks.filter(t=>t.place!=='__remember__'&&t.day>=from&&t.day<=to).map(t=>t.day));
+      daysToShow=[...taskDays].sort();
+      if(!daysToShow.length){main.innerHTML='<div class="empty-msg">Задач нет</div>';return;}
+    }
   }
 
   const groups={};
@@ -876,7 +938,7 @@ function render(){
       const yw=col.yw?' yw':'';
       const inlineForm=`<div class="inline-add-form" style="--dc:${col.c}">
         <input type="time" id="iatime-${day}" placeholder="время" />
-        <input type="text" id="iatask-${day}" placeholder="Название задачи..." onkeydown="if(event.key==='Enter')inlineAdd('${day}')"/>
+        <input type="text" id="iatask-${day}" placeholder="Название задачи..." onkeydown="if(event.key==='Enter'){event.preventDefault();inlineAdd('${day}');}"/>
         <button class="inline-add-btn${yw}" onclick="inlineAdd('${day}')">+ Добавить</button>
       </div>`;
       return `<div class="day-group" style="--dc:${col.c};--dl:${col.l}">
@@ -885,7 +947,7 @@ function render(){
           ondrop="dayLabelDrop(event,'${day}')"
           ondragleave="dayLabelDragLeave('${day}')"
           id="daylabel-${day}">${label}</div>
-        ${sorted.length?`<div class="free-tasks-row">${sorted.map(t=>taskCardHTML(t)).join('')}</div>`:''}
+        ${sorted.length?`<div class="free-tasks-col">${sorted.map(t=>taskCardRowHTML(t)).join('')}</div>`:''}
         ${inlineForm}
         </div>`;
     }
@@ -922,31 +984,54 @@ function render(){
 
 // ── CRUD ─────────────────────────────────────────
 async function loadTasks(){
-  try{const r=await fetch(API);allTasks=await r.json();}
-  catch(e){allTasks=JSON.parse(localStorage.getItem('tasks_local')||'[]');}
+  const local=JSON.parse(localStorage.getItem('tasks_local')||'[]');
+  try{
+    const r=await fetch(API);
+    const remote=await r.json();
+    // Prefer local copy when it already has data — local is kept in sync on every
+    // action (add/edit/delete/toggle), so it is the more trustworthy source and
+    // avoids resurrecting stale/duplicate entries from a slow or cached server.
+    allTasks = (local && local.length) ? local : remote;
+  }catch(e){
+    allTasks = local;
+  }
+  localStorage.setItem('tasks_local',JSON.stringify(allTasks));
   render();
 }
 
 async function toggleDone(id,wasDone){
   try{await fetch(`${API}/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({done:wasDone?0:1})});}catch(e){}
   const t=allTasks.find(x=>x.id===id);if(t)t.done=wasDone?0:1;
+  localStorage.setItem('tasks_local',JSON.stringify(allTasks));
   render();
 }
 
 async function deleteTask(id){
   if(!confirm('Удалить задачу?'))return;
   try{await fetch(`${API}/${id}`,{method:'DELETE'});}catch(e){}
-  allTasks=allTasks.filter(x=>x.id!==id);render();
+  allTasks=allTasks.filter(x=>x.id!==id);
+  localStorage.setItem('tasks_local',JSON.stringify(allTasks));
+  render();
 }
 
+let _duplicating={};
 async function duplicateTask(id){
+  if(_duplicating[id])return; _duplicating[id]=true;
   try{
-    const r=await fetch(`${API}/${id}/duplicate`,{method:'POST'});
-    const data=await r.json();
     const src=allTasks.find(x=>x.id===id);
-    if(src){const newT={...src,id:data.id,done:0};const idx=allTasks.findIndex(x=>x.id===id);allTasks.splice(idx+1,0,newT);}
-  }catch(e){}
-  render();
+    if(!src){return;}
+    let newId=Date.now();
+    try{
+      const r=await fetch(`${API}/${id}/duplicate`,{method:'POST'});
+      const data=await r.json();
+      if(data&&data.id!=null) newId=data.id;
+    }catch(e){}
+    const newT={...src,id:newId,done:0};
+    const idx=allTasks.findIndex(x=>x.id===id);
+    allTasks.splice(idx+1,0,newT);
+    localStorage.setItem('tasks_local',JSON.stringify(allTasks));
+    render();
+  }finally{_duplicating[id]=false;}
 }
 
 function toggleExtra(id){
@@ -1111,31 +1196,36 @@ function closeModal(e){
     document.getElementById('overlay').classList.remove('open');
 }
 
+let _savingTask=false;
 async function saveTask(){
-  const task=document.getElementById('inpTask').value.trim();
-  if(!task){alert('Напиши задачу');return;}
-  let body;
-  if(addingRemember){
-    body={day:toYMD(new Date()),task,time:'',place:'__remember__',comment:document.getElementById('inpComment').value};
-  } else {
-    const day=document.getElementById('inpDay').value;
-    if(!day){alert('Выбери дату');return;}
-    body={day,task,time:document.getElementById('inpTime').value,
-      place:document.getElementById('inpPlace').value.trim(),
-      deadline:document.getElementById('inpDeadline').value,
-      comment:document.getElementById('inpComment').value};
-  }
+  if(_savingTask)return; _savingTask=true;
   try{
-    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const data=await r.json();
-    allTasks.push({id:data.id,done:0,sort_order:allTasks.length,...body});
-  }catch(e){
-    const id=Date.now();
-    allTasks.push({id,done:0,sort_order:allTasks.length,...body});
+    const task=document.getElementById('inpTask').value.trim();
+    if(!task){alert('Напиши задачу');return;}
+    const tagEl=document.getElementById('inpTag');
+    let body;
+    if(addingRemember){
+      body={day:toYMD(new Date()),task,time:'',place:'__remember__',comment:document.getElementById('inpComment').value,tag:tagEl?tagEl.value:''};
+    } else {
+      const day=document.getElementById('inpDay').value;
+      if(!day){alert('Выбери дату');return;}
+      body={day,task,time:document.getElementById('inpTime').value,
+        place:document.getElementById('inpPlace').value.trim(),
+        deadline:document.getElementById('inpDeadline').value,
+        comment:document.getElementById('inpComment').value,
+        tag:tagEl?tagEl.value:''};
+    }
+    let newId=Date.now();
+    try{
+      const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      const data=await r.json();
+      if(data&&data.id!=null) newId=data.id;
+    }catch(e){}
+    allTasks.push({id:newId,done:0,sort_order:allTasks.length,...body});
     localStorage.setItem('tasks_local',JSON.stringify(allTasks));
-  }
-  document.getElementById('overlay').classList.remove('open');
-  render();
+    document.getElementById('overlay').classList.remove('open');
+    render();
+  }finally{_savingTask=false;}
 }
 
 // ── Edit Task Modal ──────────────────────────────
@@ -1160,23 +1250,27 @@ function closeEditModal(e){
     document.getElementById('editOverlay').classList.remove('open');
 }
 
+let _savingEdit=false;
 async function saveEdit(){
-  const task=document.getElementById('editTask').value.trim();
-  if(!task){alert('Напиши задачу');return;}
-  const t=allTasks.find(x=>x.id===editingTaskId);if(!t)return;
-  const isR=t.place==='__remember__';
-  const updates={task,comment:document.getElementById('editComment').value};
-  if(!isR){
-    updates.day=document.getElementById('editDay').value;
-    updates.time=document.getElementById('editTime').value;
-    updates.place=document.getElementById('editPlace').value.trim();
-    updates.deadline=document.getElementById('editDeadline').value;
-  }
-  try{await fetch(`${API}/${editingTaskId}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(updates)});}catch(e){}
-  Object.assign(t,updates);
-  localStorage.setItem('tasks_local',JSON.stringify(allTasks));
-  document.getElementById('editOverlay').classList.remove('open');
-  render();
+  if(_savingEdit)return; _savingEdit=true;
+  try{
+    const task=document.getElementById('editTask').value.trim();
+    if(!task){alert('Напиши задачу');return;}
+    const t=allTasks.find(x=>x.id===editingTaskId);if(!t)return;
+    const isR=t.place==='__remember__';
+    const tagEl=document.getElementById('editTag'); const updates={task,comment:document.getElementById('editComment').value,tag:tagEl?tagEl.value:''};
+    if(!isR){
+      updates.day=document.getElementById('editDay').value;
+      updates.time=document.getElementById('editTime').value;
+      updates.place=document.getElementById('editPlace').value.trim();
+      updates.deadline=document.getElementById('editDeadline').value;
+    }
+    try{await fetch(`${API}/${editingTaskId}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(updates)});}catch(e){}
+    Object.assign(t,updates);
+    localStorage.setItem('tasks_local',JSON.stringify(allTasks));
+    document.getElementById('editOverlay').classList.remove('open');
+    render();
+  }finally{_savingEdit=false;}
 }
 
 // ── KANBAN ───────────────────────────────────────
@@ -1413,48 +1507,57 @@ function kColDrop(e,targetColId){
 }
 
 // ── Inline add remember ──────────────────────────
+let _addingRememberInline=false;
 async function inlineAddRemember(){
-  const taskEl=document.getElementById('iatask-remember');
-  if(!taskEl)return;
-  const task=taskEl.value.trim();
-  if(!task){taskEl.focus();taskEl.style.borderColor='var(--pink)';setTimeout(()=>taskEl.style.borderColor='',1000);return;}
-  const body={day:toYMD(new Date()),task,time:'',place:'__remember__',comment:''};
+  if(_addingRememberInline)return; _addingRememberInline=true;
   try{
-    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const data=await r.json();
-    allTasks.push({id:data.id,done:0,sort_order:allTasks.length,...body});
-  }catch(e){
-    const id=Date.now();
-    allTasks.push({id,done:0,sort_order:allTasks.length,...body});
+    const taskEl=document.getElementById('iatask-remember');
+    if(!taskEl)return;
+    const task=taskEl.value.trim();
+    if(!task){taskEl.focus();taskEl.style.borderColor='var(--pink)';setTimeout(()=>taskEl.style.borderColor='',1000);return;}
+    taskEl.value=''; // clear immediately so a repeated keystroke can't resubmit the same text
+    const body={day:toYMD(new Date()),task,time:'',place:'__remember__',comment:'',tag:''};
+    let newId=Date.now();
+    try{
+      const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      const data=await r.json();
+      if(data&&data.id!=null) newId=data.id;
+    }catch(e){}
+    allTasks.push({id:newId,done:0,sort_order:allTasks.length,...body});
     localStorage.setItem('tasks_local',JSON.stringify(allTasks));
-  }
-  render();
-  setTimeout(()=>document.getElementById('iatask-remember')?.focus(),50);
+    render();
+    setTimeout(()=>document.getElementById('iatask-remember')?.focus(),50);
+  }finally{_addingRememberInline=false;}
 }
 
 // ── Inline add (custom mode) ─────────────────────
+let _addingInlineDay={};
 async function inlineAdd(day){
-  const taskEl=document.getElementById('iatask-'+day);
-  const timeEl=document.getElementById('iatime-'+day);
-  if(!taskEl)return;
-  const task=taskEl.value.trim();
-  if(!task){taskEl.focus();taskEl.style.borderColor='var(--pink)';setTimeout(()=>taskEl.style.borderColor='',1000);return;}
-  const body={day,task,time:timeEl?timeEl.value:'',place:'',deadline:'',comment:''};
+  if(_addingInlineDay[day])return; _addingInlineDay[day]=true;
   try{
-    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const data=await r.json();
-    allTasks.push({id:data.id,done:0,sort_order:allTasks.length,...body});
-  }catch(e){
-    const id=Date.now();
-    allTasks.push({id,done:0,sort_order:allTasks.length,...body});
+    const taskEl=document.getElementById('iatask-'+day);
+    const timeEl=document.getElementById('iatime-'+day);
+    if(!taskEl)return;
+    const task=taskEl.value.trim();
+    if(!task){taskEl.focus();taskEl.style.borderColor='var(--pink)';setTimeout(()=>taskEl.style.borderColor='',1000);return;}
+    const timeVal=timeEl?timeEl.value:'';
+    taskEl.value=''; // clear immediately so a repeated keystroke can't resubmit the same text
+    if(timeEl) timeEl.value='';
+    const body={day,task,time:timeVal,place:'',deadline:'',comment:'',tag:''};
+    let newId=Date.now();
+    try{
+      const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      const data=await r.json();
+      if(data&&data.id!=null) newId=data.id;
+    }catch(e){}
+    allTasks.push({id:newId,done:0,sort_order:allTasks.length,...body});
     localStorage.setItem('tasks_local',JSON.stringify(allTasks));
-  }
-  render();
-  // restore focus to the same day's input after re-render
-  setTimeout(()=>{
-    const el=document.getElementById('iatask-'+day);
-    if(el)el.focus();
-  },50);
+    render();
+    setTimeout(()=>{
+      const el=document.getElementById('iatask-'+day);
+      if(el)el.focus();
+    },50);
+  }finally{_addingInlineDay[day]=false;}
 }
 
 // ── Kanban rename ────────────────────────────────
@@ -1527,4 +1630,5 @@ loadTasks();
 </script>
 </body>
 </html>
+
 
