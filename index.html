@@ -618,7 +618,7 @@ let plannerDrag = null; // {taskId, fromSlot, fromDay}
 let kcardDragSrc = null; // {cardId, colId}
 
 // Kanban
-let kanbanData = JSON.parse(localStorage.getItem('kanbanData') || 'null') || {
+const DEFAULT_KANBAN = {
   boards:[{id:'b1',name:'Основная',columns:[
     {id:'c1',name:'Нужно сделать',cards:[]},
     {id:'c2',name:'В процессе',cards:[]},
@@ -626,6 +626,7 @@ let kanbanData = JSON.parse(localStorage.getItem('kanbanData') || 'null') || {
   ]}],
   activeBoardId:'b1'
 };
+let kanbanData = JSON.parse(localStorage.getItem('kanbanData') || 'null') || DEFAULT_KANBAN;
 let activeBoardId = kanbanData.activeBoardId || kanbanData.boards[0]?.id;
 let addingToColId = null;
 let editingKcard = null;
@@ -633,6 +634,26 @@ let editingKcard = null;
 function saveKanban(){
   kanbanData.activeBoardId = activeBoardId;
   localStorage.setItem('kanbanData', JSON.stringify(kanbanData));
+  // Sync to server (fire-and-forget, non-blocking)
+  fetch('/api/kanban', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(kanbanData)
+  }).catch(()=>{});
+}
+
+async function loadKanban(){
+  try{
+    const r = await fetch('/api/kanban');
+    const remote = await r.json();
+    if(remote && remote.boards && remote.boards.length){
+      kanbanData = remote;
+      activeBoardId = kanbanData.activeBoardId || kanbanData.boards[0]?.id;
+      localStorage.setItem('kanbanData', JSON.stringify(kanbanData));
+    }
+  }catch(e){
+    // offline — use localStorage cache already loaded
+  }
 }
 
 const SCHOOL_SLOTS=[
@@ -685,7 +706,7 @@ function switchTab(tab,btn){
   document.getElementById('kanbanView').style.display=tab==='kanban'?'block':'none';
   const fab=document.getElementById('fab');
   fab.className='fab'+(tab==='kanban'?' kanban-mode':(filter==='remember'?' remember-mode':''));
-  if(tab==='kanban') renderKanban();
+  if(tab==='kanban') loadKanban().then(()=>renderKanban());
 }
 
 // ── Custom week state ────────────────────────────
@@ -984,18 +1005,16 @@ function render(){
 
 // ── CRUD ─────────────────────────────────────────
 async function loadTasks(){
-  const local=JSON.parse(localStorage.getItem('tasks_local')||'[]');
+  // Server is always the source of truth for cross-device sync.
+  // localStorage is only a fallback when the server is unreachable (offline/sleeping).
   try{
     const r=await fetch(API);
-    const remote=await r.json();
-    // Prefer local copy when it already has data — local is kept in sync on every
-    // action (add/edit/delete/toggle), so it is the more trustworthy source and
-    // avoids resurrecting stale/duplicate entries from a slow or cached server.
-    allTasks = (local && local.length) ? local : remote;
+    allTasks=await r.json();
+    localStorage.setItem('tasks_local',JSON.stringify(allTasks)); // update cache
   }catch(e){
-    allTasks = local;
+    // Server unreachable — use cached copy so the app still works offline
+    allTasks=JSON.parse(localStorage.getItem('tasks_local')||'[]');
   }
-  localStorage.setItem('tasks_local',JSON.stringify(allTasks));
   render();
 }
 
@@ -1627,8 +1646,10 @@ function dayLabelDrop(e,day){
 }
 
 loadTasks();
+loadKanban(); // preload kanban from server on start
 </script>
 </body>
 </html>
+
 
 
